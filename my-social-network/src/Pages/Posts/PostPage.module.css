@@ -1,0 +1,135 @@
+.postPage {
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #ddd;
+}
+.header div {
+  display: flex;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.username {
+  font-weight: bold;
+  margin: 0;
+  margin-right: 7px;
+}
+
+.followButton {
+  color: #0095f6;
+  background: none;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 0.5rem;
+}
+
+.description {
+  padding: 1rem 0;
+}
+
+.comments {
+  padding: 1rem 0;
+  border-bottom: 1px solid #ddd;
+
+}
+
+.comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+  margin-bottom: 0.9rem;
+  text-align: left;
+}
+.text{
+    display: flex;
+    align-items: center;
+}
+.like {
+    display: flex;
+    height: 100%;
+    margin-left: 8px;
+}
+.like_5{
+    display: flex;
+    gap: 0.7rem;
+    margin-top: 4px;
+}
+.comment p {
+    max-width: 400px;
+  white-space: pre-wrap;
+  text-align: left;
+}
+.commentAvatar {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.commentUsername {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.likes {
+  font-size: 12px;
+  color: #8e8e8e;
+  margin-left: auto;
+}
+
+.footer {
+  padding: 1rem 0;
+}
+
+.likesSection {
+  font-size: 12px;
+  color: #8e8e8e;
+  margin-bottom: 0.5rem;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: self-start;
+}
+
+.commentInput {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  padding-top: 0.5rem;
+}
+
+.commentInput input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 0.5rem;
+}
+
+.commentInput button {
+  background-color: transparent;
+  color: #0095f6;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.commentInput button:hover {
+  background-color: var(--border-grey);
+}

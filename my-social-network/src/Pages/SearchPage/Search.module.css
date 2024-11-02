@@ -1,0 +1,15 @@
+.container {
+    width: 100%;
+    display: flex;
+    position: relative;
+}
+.cont_absolut {
+    position: absolute;
+    z-index: 2;
+    opacity: 0; 
+    transition: opacity 0.3s ease-in-out;
+}
+
+.fadeIn {
+    opacity: 1;
+}

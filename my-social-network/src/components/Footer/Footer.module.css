@@ -1,0 +1,17 @@
+.footer {
+  margin: 0 auto;
+  width: 100%;
+  border-top: 1px solid #DBDBDB;
+  max-width: 1550px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* min-width: 158px; */
+  padding-top: 1.5rem;
+  padding-bottom: 3.8rem;
+}
+.footer_list {
+  display: flex;
+  gap: 2.25rem;
+  margin-bottom: 3rem;
+}

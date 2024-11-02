@@ -1,0 +1,40 @@
+.container {
+  width: 230px;
+  padding: 28px 13px;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid #dbdbdb;
+}
+.container_img {
+  width: 100%;
+  margin-bottom: 25px;
+}
+.container_list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.container_li {
+  width: 100%;
+  display: flex;
+  padding: 12px;
+  border: none;
+  background-color: transparent;
+  text-decoration: none;
+  color: black;
+}
+.container_li:hover {
+  border-radius: 4px;
+  background-color: #ededed;
+}
+.container_li_text {
+  margin-left: 16px;
+  padding-top: 5px;
+}
+.container_li.active .container_li_text p {
+    /* color: #007aff; */
+    font-weight: 800;
+}
+.container_profile {
+  margin-top: 47px;
+}

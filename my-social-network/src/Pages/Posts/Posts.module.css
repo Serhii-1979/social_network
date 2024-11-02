@@ -1,0 +1,27 @@
+.container {
+  display: flex;
+  justify-content: center;
+}
+.postCon {
+  position: absolute;
+  z-index: 5;
+  margin-top: 4%;
+  width: 85%;
+  background-color: #fff;
+}
+.poster {
+  width: 100%;
+  background-color: #fff;
+  position: absolute;
+  z-index: 6;
+  display: flex;
+}
+.posterIMG {
+  width: 55%;
+}
+.posterIMG img {
+  width: 100%;
+}
+.posterLeft {
+    padding: 0 1.5rem;
+}
