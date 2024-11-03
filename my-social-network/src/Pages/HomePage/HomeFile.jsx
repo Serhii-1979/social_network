@@ -1,3 +1,4 @@
+// HomeFile.jsx
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { $api } from "../../utils/api.ts";
@@ -15,6 +16,7 @@ function HomeFile({ user = {}, postId }) {
   console.log("User profile image:", user?.profile_image);
 
   const [liked, setLiked] = useState(false);
+  const [showFullBio, setShowFullBio] = useState(false);
   const navigate = useNavigate();
 
   const handleLike = async () => {
@@ -31,11 +33,15 @@ function HomeFile({ user = {}, postId }) {
     const weeks = Math.floor(
       (new Date() - new Date(date)) / (1000 * 60 * 60 * 24 * 7)
     );
-    return `${weeks} wek`;
+    return `${weeks} week${weeks > 1 ? 's' : ''}`;
+  };
+
+  const handleBioToggle = () => {
+    setShowFullBio(!showFullBio);
   };
 
   return (
-    <div className={styles.container}>
+    <div className={styles.container} onClick={() => navigate(`/profuser/${user._id}`)}>
       <div className={styles.cont_up}>
         <button className={styles.cont_up_ava}>
           <img src={user?.profile_image || Ava} alt="avatar" />
@@ -47,7 +53,10 @@ function HomeFile({ user = {}, postId }) {
           <p className="p_punkt">•</p>
           <button
             className="buttonAva"
-            onClick={() => navigate(`/profile/${user._id}`)}
+            onClick={(e) => {
+              e.stopPropagation(); // Чтобы клик на "follow" не перенаправлял на страницу профиля
+              // Здесь можно добавить логику подписки
+            }}
           >
             follow
           </button>
@@ -60,10 +69,10 @@ function HomeFile({ user = {}, postId }) {
 
       <div className={styles.cont_down}>
         <div className={styles.down_button}>
-          <button onClick={handleLike}>
+          <button onClick={(e) => { e.stopPropagation(); handleLike(); }}>
             <img src={liked ? RedHeartIcon : Heart} alt="like" />
           </button>
-          <button onClick={() => navigate("/create/createpost")}>
+          <button onClick={(e) => { e.stopPropagation(); navigate("/create/createpost"); }}>
             <img src={MessageImg} alt="message" />
           </button>
         </div>
@@ -72,14 +81,20 @@ function HomeFile({ user = {}, postId }) {
         </div>
         <div className={styles.down_description}>
           <p className="p_12Bold italic">
-            <span className="p_12Bold">{user?.username || "Username"}</span> {user?.bio || ""}
+            <span className="p_12Bold">{user?.username || "Username"}</span>
+            {" "}{showFullBio ? user?.bio : `${user?.bio?.slice(0, 6)}...`} {/* Показ сокращенного или полного bio */}
           </p>
-          <p className="p_12_400">
-            heyyyy... <button className="p_12SmallGrey">more</button>
-          </p>
+          {user?.bio?.length > 6 && (
+            <button
+              className="p_12SmallGrey"
+              onClick={(e) => { e.stopPropagation(); handleBioToggle(); }} // Остановить всплытие
+            >
+              {showFullBio ? "less" : "more"}
+            </button>
+          )}
         </div>
         <div>
-          <p className="p_12SmallGrey">View all comments (732)</p>
+          <p className="p_12SmallGrey">View all comments (<span>{user?.likes_count}</span>)</p> {/* Выводим количество лайков */}
         </div>
       </div>
     </div>

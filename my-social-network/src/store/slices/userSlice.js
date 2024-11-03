@@ -8,10 +8,17 @@ export const fetchUsers = createAsyncThunk('user/fetchUsers', async () => {
   return response.data;
 });
 
+// Thunk для получения данных конкретного пользователя по ID
+export const fetchUserById = createAsyncThunk('user/fetchUserById', async (userId) => {
+  const response = await $api.get(`/user/${userId}`);
+  return response.data;
+});
+
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     users: [],
+    currentUser: null,
     status: 'idle',
     error: null,
   },
@@ -26,6 +33,17 @@ const userSlice = createSlice({
         state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      })
+      .addCase(fetchUserById.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchUserById.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.currentUser = action.payload; // Сохраняем текущего пользователя
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       });

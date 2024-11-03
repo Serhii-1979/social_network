@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Search from '../../components/search/Search';
 import HomePage from "../HomePage/HomePage";
-import styles from './Search.module.css';
+import styles from './SearchPage.module.css';
 
 function SearchPage() {
   const [isVisible, setIsVisible] = useState(false);

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchUsers } from "../../store/slices/userSlice";
-// import { $api } from "../../utils/api.ts";
+
 
 import Ok from "../../images/svg/Ok.svg";
 

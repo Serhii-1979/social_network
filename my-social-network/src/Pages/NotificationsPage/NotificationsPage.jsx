@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import HomePage from "../HomePage/HomePage";
 import Notification from '../../components/notifications/notifications';
 
-import styles from '../SearchPage/Search.module.css';
+import styles from '../SearchPage/SearchPage.module.css';
 
 
 function NotificationsPage() {

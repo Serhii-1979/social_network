@@ -74,13 +74,23 @@ margin-bottom: 6px;
 }
 .down_description {
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
+    /* align-items: center; */
     gap: 1rem;
     margin-bottom: 0.5rem;
+}
+.down_description p {
+  flex: 1; /* Занимает оставшееся пространство */
+  white-space: nowrap; /* Запрещает перенос текста на новую строку */
+  overflow: hidden; /* Обрезает текст, который не помещается */
+  text-overflow: ellipsis; /* Добавляет "..." для обрезанного текста */
+  margin: 0;
 }
 .down_description button {
   background-color: transparent;
   border: none;
+  flex-shrink: 0; /* Запрещает кнопке уменьшаться */
+  margin-left: 8px;
 }
 .down_description button:hover {
 opacity: 0.7;
