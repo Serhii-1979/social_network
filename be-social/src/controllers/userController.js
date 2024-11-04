@@ -9,7 +9,7 @@ const upload = multer({ storage });
 // Получение профиля конкретного пользователя по его ID
 export const getCurrentUserProfile = async (req, res) => {
   try {
-    const user = req.user; // Проверяем, что authMiddleware установил req.user
+    const user = req.user; // Используем req.user, установленный в `authMiddleware`
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
@@ -18,6 +18,7 @@ export const getCurrentUserProfile = async (req, res) => {
     res.status(500).json({ message: 'Ошибка получения профиля текущего пользователя', error: error.message });
   }
 };
+
 
 export const getUserProfile = async (req, res) => {
   const userId = req.params.userId;

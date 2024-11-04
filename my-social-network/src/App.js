@@ -41,10 +41,9 @@ function App() {
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/posts" element={<Posts />} />
-          {/* <Route path="/profile" element={<Profile />} /> */}
           <Route path="/edit" element={<Edit />} />
           <Route path="/profuser" element={<ProfileUser />} />
-          <Route path="create/createpost" element={<CreatePost />} />
+          <Route path="create" element={<CreatePost />} />
           <Route 
             path="/profile" 
             element={

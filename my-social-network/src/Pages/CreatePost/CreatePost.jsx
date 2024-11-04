@@ -1,16 +1,29 @@
 import React, { useState } from "react";
-import Profile from "../Profile/Profile";
-
+import HomePage from "../HomePage/HomePage";
 import CreatePosts from "./CreatePosts";
 import PostActions from "./PostActions";
+import { $api } from "../../utils/api.ts"; // Убедитесь, что $api настроен для работы с Axios
 
 import styles from "./CreatePost.module.css";
 
 function CreatePost() {
   const [isPostShared, setIsPostShared] = useState(false);
 
-  const handleShare = () => {
-    setIsPostShared(true);
+  const handleShare = async ({ text, image }) => {
+    const formData = new FormData();
+    formData.append("caption", text);
+    formData.append("image", image);
+
+    try {
+      await $api.post("/post", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      setIsPostShared(true);
+    } catch (error) {
+      console.error("Ошибка при создании поста:", error);
+    }
   };
 
   return (
@@ -25,7 +38,7 @@ function CreatePost() {
         )}
       </div>
       <div className="back"></div>
-      <Profile />
+      <HomePage />
     </div>
   );
 }

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCurrentUser } from "../../store/slices/userSlice";
 import styles from "./Profile.module.css";
@@ -9,15 +8,13 @@ function Profile() {
   const { currentUser, status, error } = useSelector((state) => state.user);
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchCurrentUser());
-    }
-  }, [dispatch, status]);
+    // Запрашиваем данные о текущем пользователе при каждом открытии профиля
+    dispatch(fetchCurrentUser());
+  }, [dispatch]);
 
   if (status === "loading") return <div>Loading...</div>;
   if (status === "failed") return <div>Ошибка загрузки профиля: {error}</div>;
 
-  // Проверка на наличие currentUser перед рендерингом данных
   if (!currentUser) {
     return <div>Данные профиля не найдены.</div>;
   }
@@ -36,42 +33,20 @@ function Profile() {
           </div>
           <div className={styles.profileContent}>
             <div className={styles.profileContent_it}>
-              <Link className={`${styles.profileLink_1} h3_20`}>
+              <p className={`${styles.profileLink_1} h3_20`}>
                 {currentUser.username || "Username"}
-              </Link>
-              <Link
-                to="/edit"
-                className={`${styles.profileLinkMyProf} p_14Bold_black`}
-              >
+              </p>
+              <p className={`${styles.profileLinkMyProf} p_14Bold_black`}>
                 Edit profile
-              </Link>
+              </p>
             </div>
             <div className={styles.profilePosts}>
-              <p>
-                <span className="p_16Bold">
-                  {currentUser.posts_count || 0}
-                </span>{" "}
-                post
-              </p>
-              <p>
-                <span className="p_16Bold">{currentUser.followers_count || 0}</span>{" "}
-                followers
-              </p>
-              <p>
-                <span className="p_16Bold">{currentUser.following_count || 0}</span>{" "}
-                following
-              </p>
+              <p><span className="p_16Bold">{currentUser.posts_count || 0}</span> post</p>
+              <p><span className="p_16Bold">{currentUser.followers_count || 0}</span> followers</p>
+              <p><span className="p_16Bold">{currentUser.following_count || 0}</span> following</p>
             </div>
             <div className={styles.profilePosts_content}>
-              <p className="p_14Small">
-                {currentUser.bio || "No bio available."}
-              </p>
-            </div>
-            <div className={styles.profile_a}>
-              <p className="p_14Small">
-                • {currentUser.bio || "User bio not provided."}
-              </p>
-              <p className={`${styles.name} p_14Small`}>{currentUser.full_name}</p>
+              <p className="p_14Small">{currentUser.bio || "No bio available."}</p>
             </div>
           </div>
         </div>

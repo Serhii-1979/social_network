@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   following_count: { type: Number, default: 0 },
   posts_count: { type: Number, default: 0 },
   created_at: { type: Date, default: Date.now },
+  posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
 });
 
 const User = mongoose.model("User", userSchema);

@@ -3,10 +3,6 @@ import User from "../models/userModel.js";
 import getUserIdFromToken from "../utils/helpers.js";
 import { v2 as cloudinary } from "cloudinary";
 import stream from "stream";
-import multer from "multer";
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 // Получение всех постов пользователя
 export const getUserPosts = async (req, res) => {
@@ -24,7 +20,6 @@ export const createPost = async (req, res) => {
   const { caption } = req.body;
 
   try {
-    // get image
     const bufferStream = new stream.PassThrough();
     bufferStream.end(req.file.buffer);
 
@@ -36,39 +31,26 @@ export const createPost = async (req, res) => {
           return res.status(500).json({ message: "Ошибка загрузки" });
         }
         image_url = result.secure_url;
-        res
-          .status(201)
-          .json({ message: "Картинка сохранилась", url: result.secure_url });
+
+        const post = new Post({
+          user_id: userId,
+          image_url,
+          caption,
+          created_at: new Date(),
+        });
+
+        post.save()
+          .then(async () => {
+            const user = await User.findById(userId);
+            user.posts_count += 1;
+            await user.save();
+            res.status(201).json(post);
+          })
+          .catch(saveError => res.status(500).json({ error: "Ошибка при создании поста", details: saveError.message }));
       })
       .end(req.file.buffer);
-
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ error: "Пользователь не найден" });
-
-    // Проверяем, был ли загружен файл
-    if (!req.file)
-      return res.status(400).json({ error: "Изображение не предоставлено" });
-
-    // Преобразуем файл в Base64
-    const imageBuffer = req.file.buffer;
-    const imageBase64 = imageBuffer.toString("base64");
-
-    const post = new Post({
-      user_id: userId,
-      // image_url: `data:image/jpeg;base64,${imageBase64}`, // Используйте соответствующий формат изображения
-      image_url,
-      caption,
-      created_at: new Date(),
-    });
-
-    await post.save();
-
-    user.posts_count += 1;
-    await user.save();
-
-    res.status(201).json(post);
   } catch (error) {
-    res.status(500).json({ error: "Ошибка при создании поста" });
+    res.status(500).json({ error: "Ошибка при создании поста", details: error.message });
   }
 };
 

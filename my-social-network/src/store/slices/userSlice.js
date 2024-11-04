@@ -19,19 +19,19 @@ export const fetchUserById = createAsyncThunk('user/fetchUserById', async (userI
 
 
 export const fetchCurrentUser = createAsyncThunk('user/fetchCurrentUser', async (_, { getState }) => {
-  console.log('Используемый токен:', token);
   const state = getState();
-  const token = state.auth.token || localStorage.getItem('token');
+  const token = state.auth?.token || localStorage.getItem('token'); // Получаем токен из состояния или localStorage
+
+  if (!token) throw new Error("Token is missing");
 
   const response = await $api.get('/user/current', {
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`, // Передаем токен в заголовке Authorization
     },
   });
 
   return response.data;
 });
-
 
 
 

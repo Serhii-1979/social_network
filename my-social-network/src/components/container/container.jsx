@@ -36,7 +36,7 @@ function Container() {
                 <ListItem icon={Create} textKey="create" path="/create" />
             </div>
             <div className={styles.container_profile}>
-                <ListItem icon={Profile} textKey="profile" path="profile" />
+                <ListItem icon={Profile} textKey="profile" path="/profile" />
             </div>
             <div className={styles.languageSwitcher}>
                 <button onClick={() => changeLanguage("en")}>EN</button>

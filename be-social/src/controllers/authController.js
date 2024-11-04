@@ -1,10 +1,9 @@
 //authController.js
 
 import bcrypt from 'bcrypt';
-// import crypto from 'crypto';
 import User from '../models/userModel.js';
 import generateToken from '../config/jwt.js';
-// import sendEmail from '../utils/sendEmail.js';
+
 
 // Генерация временного пароля
 const generateTemporaryPassword = () => {
