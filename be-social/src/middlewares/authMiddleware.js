@@ -10,13 +10,13 @@ const authMiddleware = async (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.user_id);
+    const user = await User.findById(decoded.user_id).select('-password');
 
     if (!user) {
       return res.status(401).json({ message: 'Пользователь не найден.' });
     }
 
-    req.user = user;
+    req.user = user; // Устанавливаем пользователя в `req.user`
     next();
   } catch (error) {
     return res.status(401).json({ message: 'Неверный токен.' });

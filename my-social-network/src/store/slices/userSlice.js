@@ -1,18 +1,39 @@
 // src/store/slices/userSlice.js
+
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { $api } from '../../utils/api.ts';
 
-// Thunk для получения данных пользователей
+// Получение всех пользователей
 export const fetchUsers = createAsyncThunk('user/fetchUsers', async () => {
   const response = await $api.get('/user');
   return response.data;
 });
 
-// Thunk для получения данных конкретного пользователя по ID
+// Получение данных пользователя по ID
 export const fetchUserById = createAsyncThunk('user/fetchUserById', async (userId) => {
   const response = await $api.get(`/user/${userId}`);
   return response.data;
 });
+
+// Получение данных текущего пользователя
+
+
+export const fetchCurrentUser = createAsyncThunk('user/fetchCurrentUser', async (_, { getState }) => {
+  console.log('Используемый токен:', token);
+  const state = getState();
+  const token = state.auth.token || localStorage.getItem('token');
+
+  const response = await $api.get('/user/current', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return response.data;
+});
+
+
+
 
 const userSlice = createSlice({
   name: 'user',
@@ -32,18 +53,20 @@ const userSlice = createSlice({
         state.status = 'succeeded';
         state.users = action.payload;
       })
-      .addCase(fetchUsers.rejected, (state, action) => {
-        state.status = 'failed';
-        state.error = action.error.message;
-      })
-      .addCase(fetchUserById.pending, (state) => {
-        state.status = 'loading';
-      })
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.currentUser = action.payload; // Сохраняем текущего пользователя
+        state.currentUser = action.payload;
       })
-      .addCase(fetchUserById.rejected, (state, action) => {
+      .addCase(fetchCurrentUser.pending, (state) => {
+        state.status = 'loading';
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        console.log('Текущий пользователь:', action.payload);
+        state.status = 'succeeded';
+        state.currentUser = action.payload;
+      })
+      .addCase(fetchCurrentUser.rejected, (state, action) => {
+        console.error('Ошибка загрузки текущего пользователя:', action.error.message);
         state.status = 'failed';
         state.error = action.error.message;
       });

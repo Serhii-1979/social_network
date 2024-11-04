@@ -33,7 +33,7 @@ function HomeFile({ user = {}, postId }) {
     const weeks = Math.floor(
       (new Date() - new Date(date)) / (1000 * 60 * 60 * 24 * 7)
     );
-    return `${weeks} week${weeks > 1 ? 's' : ''}`;
+    return `${weeks} week${weeks > 1 ? "s" : ""}`;
   };
 
   const handleBioToggle = () => {
@@ -41,7 +41,10 @@ function HomeFile({ user = {}, postId }) {
   };
 
   return (
-    <div className={styles.container} onClick={() => navigate(`/profuser/${user._id}`)}>
+    <div
+      className={styles.container}
+      onClick={() => navigate(`/profuser/${user._id}`)}
+    >
       <div className={styles.cont_up}>
         <button className={styles.cont_up_ava}>
           <img src={user?.profile_image || Ava} alt="avatar" />
@@ -69,10 +72,20 @@ function HomeFile({ user = {}, postId }) {
 
       <div className={styles.cont_down}>
         <div className={styles.down_button}>
-          <button onClick={(e) => { e.stopPropagation(); handleLike(); }}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              handleLike();
+            }}
+          >
             <img src={liked ? RedHeartIcon : Heart} alt="like" />
           </button>
-          <button onClick={(e) => { e.stopPropagation(); navigate("/create/createpost"); }}>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/create/createpost");
+            }}
+          >
             <img src={MessageImg} alt="message" />
           </button>
         </div>
@@ -81,20 +94,27 @@ function HomeFile({ user = {}, postId }) {
         </div>
         <div className={styles.down_description}>
           <p className="p_12Bold italic">
-            <span className="p_12Bold">{user?.username || "Username"}</span>
-            {" "}{showFullBio ? user?.bio : `${user?.bio?.slice(0, 6)}...`} {/* Показ сокращенного или полного bio */}
+            <span className="p_12Bold">{user?.username || "Username"}</span>{" "}
+            {showFullBio ? user?.bio : `${user?.bio?.slice(0, 6)}...`}{" "}
+            {/* Показ сокращенного или полного bio */}
           </p>
           {user?.bio?.length > 6 && (
             <button
               className="p_12SmallGrey"
-              onClick={(e) => { e.stopPropagation(); handleBioToggle(); }} // Остановить всплытие
+              onClick={(e) => {
+                e.stopPropagation();
+                handleBioToggle();
+              }} // Остановить всплытие
             >
               {showFullBio ? "less" : "more"}
             </button>
           )}
         </div>
         <div>
-          <p className="p_12SmallGrey">View all comments (<span>{user?.likes_count}</span>)</p> {/* Выводим количество лайков */}
+          <p className="p_12SmallGrey">
+            View all comments (<span>{user?.likes_count}</span>)
+          </p>{" "}
+          {/* Выводим количество лайков */}
         </div>
       </div>
     </div>

@@ -6,10 +6,23 @@ import multer from 'multer';
 const storage = multer.memoryStorage(); // Сохраняем файл в памяти
 const upload = multer({ storage });
 
+// Получение профиля конкретного пользователя по его ID
+export const getCurrentUserProfile = async (req, res) => {
+  try {
+    const user = req.user; // Проверяем, что authMiddleware установил req.user
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Ошибка получения профиля текущего пользователя', error: error.message });
+  }
+};
+
 export const getUserProfile = async (req, res) => {
   const userId = req.params.userId;
   try {
-    const user = await User.findById(userId).select('-password').select('-created_at');
+    const user = await User.findById(userId).select('-password');
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
@@ -19,10 +32,26 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-// Обновить профиль пользователя
-export const updateUserProfile = async (req, res) => {
-  const userId = getUserIdFromToken(req);
 
+
+// export const getCurrentUserProfile = async (req, res) => {
+//   const userId = getUserIdFromToken(req); // Получаем ID текущего пользователя из токена
+//   try {
+//     const user = await User.findById(userId).select('-password');
+//     if (!user) {
+//       return res.status(404).json({ message: 'Пользователь не найден' });
+//     }
+//     res.status(200).json(user);
+//   } catch (error) {
+//     res.status(500).json({ message: 'Ошибка получения профиля текущего пользователя', error: error.message });
+//   }
+//   console.log('Текущий пользователь:', action.payload);  //временный лог
+
+// };
+
+// Обновление профиля текущего пользователя
+export const updateUserProfile = async (req, res) => {
+  const userId = getUserIdFromToken(req); // Идентифицируем пользователя по токену
   try {
     const user = await User.findById(userId);
     if (!user) {
@@ -31,6 +60,7 @@ export const updateUserProfile = async (req, res) => {
 
     const { username, bio } = req.body;
 
+    // Обновляем имя пользователя и био, если они переданы
     if (username) user.username = username;
     if (bio) user.bio = bio;
 
@@ -57,5 +87,5 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// Экспорт загрузки
+// Экспорт загрузки для использования в маршрутах
 export const uploadProfileImage = upload.single('profile_image');

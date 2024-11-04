@@ -56,10 +56,12 @@
 }
 .profileContent_it {
   display: flex;
+  align-items: center;
   gap: 4%;
 }
 .profileLink_1 {
 border: none;
+text-decoration: none;
 background-color: transparent;
 cursor: pointer;
 }
@@ -81,6 +83,12 @@ opacity: 1;
   align-items: center;
   border: none;
 }
+.profileLinkMyProf {
+  background-color: var(--button-color);
+  color: white;
+  border-radius: 6px;
+  padding: 1.5% 10%;
+}
 .profileLink_2 {
   padding: 5% 25%;
   border-radius: 6px;
@@ -97,10 +105,10 @@ opacity: 1;
   font-weight: 500;
   margin-top: 0.5rem;
 }
-.profileText {
+/* .profileText {
 }
 .profilePosts_content {
-}
+} */
 .profile_a {
   display: flex;
 }
