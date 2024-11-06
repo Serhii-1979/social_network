@@ -48,14 +48,22 @@
 
 .cont_medium {
   width: 100%;
-  max-height: 500px;
   max-width: 400px;
-  width: 100%;
+  max-height: 400px;
+  overflow: hidden; /* Обрезает все, что выходит за пределы контейнера */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cont_medium img {
   width: 100%;
+  height: auto; /* Сохраняет соотношение сторон */
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Масштабирует изображение, чтобы оно вписывалось в границы */
 }
+
 .cont_down {
     display: flex;
     flex-direction: column;

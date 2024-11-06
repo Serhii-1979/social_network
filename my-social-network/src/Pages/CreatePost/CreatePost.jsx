@@ -1,3 +1,5 @@
+// src/Pages/CreatePost/CreatePost.jsx
+
 import React, { useState } from "react";
 import HomePage from "../HomePage/HomePage";
 import CreatePosts from "./CreatePosts";
@@ -15,14 +17,27 @@ function CreatePost() {
     formData.append("image", image);
 
     try {
-      await $api.post("/post", formData, {
+      const response = await $api.post("/post", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      setIsPostShared(true);
+      console.log("Пост успешно создан", response.data); // Подтверждаем успех
+      setIsPostShared(true); // Устанавливаем состояние при успешной отправке
     } catch (error) {
-      console.error("Ошибка при создании поста:", error);
+      if (error.response) {
+        // Ошибка, полученная от сервера
+        console.error("Ошибка при создании поста:", error.response.data);
+        alert(`Ошибка: ${error.response.data.message || "Не удалось создать пост"}`);
+      } else if (error.request) {
+        // Проблема с запросом
+        console.error("Сервер не ответил. Проверьте соединение:", error.request);
+        alert("Сервер не ответил. Проверьте соединение.");
+      } else {
+        // Другая ошибка
+        console.error("Ошибка при настройке запроса:", error.message);
+        alert(`Ошибка: ${error.message}`);
+      }
     }
   };
 

@@ -9,7 +9,7 @@ const upload = multer({ storage });
 // Получение профиля конкретного пользователя по его ID
 export const getCurrentUserProfile = async (req, res) => {
   try {
-    const user = req.user; // Используем req.user, установленный в `authMiddleware`
+    const user = req.user;
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
@@ -23,7 +23,15 @@ export const getCurrentUserProfile = async (req, res) => {
 export const getUserProfile = async (req, res) => {
   const userId = req.params.userId;
   try {
-    const user = await User.findById(userId).select('-password');
+    // Попробуем загрузить пользователя вместе с его постами
+    const user = await User.findById(userId)
+      .select('-password')
+      .populate({
+        path: 'posts', // Указываем путь к постам
+        model: 'Post', // Указываем, что это модель Post
+        select: 'image_url caption created_at' // Указываем поля, которые хотим получить
+      });
+
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
@@ -32,23 +40,6 @@ export const getUserProfile = async (req, res) => {
     res.status(500).json({ message: 'Ошибка получения профиля пользователя', error: error.message });
   }
 };
-
-
-
-// export const getCurrentUserProfile = async (req, res) => {
-//   const userId = getUserIdFromToken(req); // Получаем ID текущего пользователя из токена
-//   try {
-//     const user = await User.findById(userId).select('-password');
-//     if (!user) {
-//       return res.status(404).json({ message: 'Пользователь не найден' });
-//     }
-//     res.status(200).json(user);
-//   } catch (error) {
-//     res.status(500).json({ message: 'Ошибка получения профиля текущего пользователя', error: error.message });
-//   }
-//   console.log('Текущий пользователь:', action.payload);  //временный лог
-
-// };
 
 // Обновление профиля текущего пользователя
 export const updateUserProfile = async (req, res) => {

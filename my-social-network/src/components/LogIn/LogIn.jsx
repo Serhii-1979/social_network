@@ -33,7 +33,7 @@ function LogIn() {
   const onSubmit = async (data) => {
     try {
       const response = await $api.post("/auth/login", {
-        emailOrUsername: data.emailOrUsername, // Изменили ключ на emailOrUsername
+        emailOrUsername: data.emailOrUsername,
         password: data.password,
       });
 

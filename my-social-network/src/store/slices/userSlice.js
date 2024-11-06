@@ -11,7 +11,7 @@ export const fetchUsers = createAsyncThunk('user/fetchUsers', async () => {
 
 // Получение данных пользователя по ID
 export const fetchUserById = createAsyncThunk('user/fetchUserById', async (userId) => {
-  const response = await $api.get(`/user/${userId}`);
+  const response = await $api.get(`/user/${userId}?populate=posts`);
   return response.data;
 });
 

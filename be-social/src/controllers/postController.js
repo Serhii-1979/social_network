@@ -23,36 +23,40 @@ export const createPost = async (req, res) => {
     const bufferStream = new stream.PassThrough();
     bufferStream.end(req.file.buffer);
 
-    let image_url = "";
+    cloudinary.uploader.upload_stream({ resource_type: "image" }, async (error, result) => {
+      if (error) {
+        console.error("Ошибка загрузки на Cloudinary:", error);
+        return res.status(500).json({ message: "Ошибка загрузки изображения" });
+      }
 
-    cloudinary.uploader
-      .upload_stream({ resource_type: "image" }, (error, result) => {
-        if (error) {
-          return res.status(500).json({ message: "Ошибка загрузки" });
-        }
-        image_url = result.secure_url;
+      console.log("Cloudinary URL:", result.secure_url); // Лог URL изображения
 
-        const post = new Post({
-          user_id: userId,
-          image_url,
-          caption,
-          created_at: new Date(),
-        });
+      const post = new Post({
+        user_id: userId,
+        image_url: result.secure_url, // Использование URL Cloudinary
+        caption,
+        created_at: new Date(),
+      });
 
-        post.save()
-          .then(async () => {
-            const user = await User.findById(userId);
-            user.posts_count += 1;
-            await user.save();
-            res.status(201).json(post);
-          })
-          .catch(saveError => res.status(500).json({ error: "Ошибка при создании поста", details: saveError.message }));
-      })
-      .end(req.file.buffer);
+      await post.save();
+
+      // Теперь добавим пост в массив posts пользователя
+      const user = await User.findById(userId);
+      if (user) {
+        user.posts.push(post._id); // Добавляем ID нового поста в массив posts пользователя
+        user.posts_count += 1; // Увеличиваем счетчик постов
+        await user.save(); // Сохраняем обновление пользователя
+      }
+
+      res.status(201).json(post);
+    }).end(req.file.buffer);
   } catch (error) {
     res.status(500).json({ error: "Ошибка при создании поста", details: error.message });
   }
 };
+
+
+
 
 // Удаление поста
 export const deletePost = async (req, res) => {
@@ -104,5 +108,15 @@ export const updatePost = async (req, res) => {
     res.status(200).json(post);
   } catch (error) {
     res.status(500).json({ error: "Ошибка при обновлении поста" });
+  }
+};
+
+export const getAllPosts = async (req, res) => {
+  try {
+    // Добавляем created_at в список полей, извлекаемых для user_id
+    const posts = await Post.find().populate('user_id', 'username profile_image created_at');
+    res.status(200).json(posts);
+  } catch (error) {
+    res.status(500).json({ error: "Ошибка при получении постов", details: error.message });
   }
 };

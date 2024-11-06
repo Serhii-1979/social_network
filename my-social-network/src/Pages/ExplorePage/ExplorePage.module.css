@@ -1,5 +1,7 @@
+/* ExplorePage.module.css */
+
 .container {
-    margin: 0 auto;
+  margin: 0 auto;
   width: 100%;
   height: 100%;
   display: flex;
@@ -9,19 +11,21 @@
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
+
 .fadeIn {
   opacity: 1;
 }
+
 .cont_img {
-  margin: 0 auto;
   width: 90%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
-  flex-wrap: wrap;
+  column-count: 3; /* Устанавливаем количество колонок */
+  column-gap: 0.2rem; /* Зазор между колонками */
 }
+
 .cont_img img {
-  /* margin: 0 2px; */
-  max-width: 300px;
+  width: 100%;
+  margin-bottom: 0.3rem; /* Расстояние между изображениями по вертикали */
+  display: block; /* Избегаем пробелов между элементами */
+  object-fit: cover; /* Изображение заполняет блок */
+  border-radius: 8px; /* Добавляем радиус, чтобы выглядело аккуратнее */
 }

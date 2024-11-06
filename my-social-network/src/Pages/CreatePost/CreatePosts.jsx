@@ -1,24 +1,32 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux"; // Импортируем useSelector для доступа к состоянию
+import { useSelector } from "react-redux";
 import styles from "./CreatePost.module.css";
 import Cloud from "../../images/svg/Cloud.svg";
 import Ava from "../../images/png/ava1.png";
 
+const popularEmojis = [
+  "😂", "😍", "😢", "👏", "🔥", "🥳", "❤️", "🤔", "😘", "🎉", "😆", "😊", 
+  "😁", "😎", "🤗", "🙌", "👌", "👍", "💪", "🥰", "😜", "🤩", "🤯", "🥺", 
+  "😅", "🤣", "😋", "😇", "🤤", "😈", "🥴", "😏", "🤓", "🙄", "😩", "🤥", 
+  "😴", "💀", "👻", "😳", "😤", "😱", "💩", "🤡","😂", "😍", "😢", "👏", "🔥", "🥳", "❤️", "🤔", "😘", "🎉", "😆", "😊", "😁", "😎", "🤗", "🙌", "👌", "👍", "💪", "🥰", "😜", "🤩", "🤯", "🥺", "😅", "🤣", "😋", "😇", "🤤", "😈", "🥴", "😏", "🤓", "🙄", "😩", "🤥", "😴", "💀", "👻", "😳", "😤", "😱", "💩","🤣", "😋", "😇", "🤤", "😈", "🥴", "😏", "🤓", "🙄", "😩", "🤥"
+];
+
+
 function CreatePosts({ onShare }) {
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
-  const [preview, setPreview] = useState(null); // Предварительный просмотр изображения
+  const [preview, setPreview] = useState(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false); // Состояние для отображения смайликов
 
-  // Получаем данные текущего пользователя из Redux
   const currentUser = useSelector((state) => state.user.currentUser);
-  const profileImage = currentUser?.profile_image || Ava; // Используем фото профиля или дефолтное изображение
-  const username = currentUser?.username || "Username"; // Используем username или дефолтное значение
+  const profileImage = currentUser?.profile_image || Ava;
+  const username = currentUser?.username || "Username";
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       setImage(file);
-      setPreview(URL.createObjectURL(file)); // Устанавливаем предварительный просмотр
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -27,8 +35,12 @@ function CreatePosts({ onShare }) {
       alert("Пожалуйста, загрузите изображение.");
       return;
     }
-
     onShare({ text, image });
+  };
+
+  const handleEmojiClick = (emoji) => {
+    setText((prevText) => prevText + emoji);
+    setShowEmojiPicker(false); // Скрываем панель смайликов после выбора
   };
 
   return (
@@ -60,8 +72,8 @@ function CreatePosts({ onShare }) {
           </div>
           <div className={styles.detailsSection}>
             <div className={styles.userInfo}>
-              <img src={profileImage} alt="avatar" className={styles.avatar} /> {/* Выводим фото профиля */}
-              <span className={styles.username}>{username}</span> {/* Выводим username */}
+              <img src={profileImage} alt="avatar" className={styles.avatar} />
+              <span className={styles.username}>{username}</span>
             </div>
             <textarea
               className={styles.textarea}
@@ -71,10 +83,31 @@ function CreatePosts({ onShare }) {
               onChange={(e) => setText(e.target.value)}
             />
             <div className={styles.footer}>
-              <button className={styles.emojiButton}>😊</button>
+              <button
+                className={styles.emojiButton}
+                onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+              >
+                😊
+              </button>
               <span>{text.length}/200</span>
             </div>
-            <div className={styles.footerEnd}></div>
+            {/* Отображение панели смайликов */}
+            
+            <div className={styles.footerEnd}>
+            {showEmojiPicker && (
+              <div className={styles.emojiPicker}>
+                {popularEmojis.map((emoji) => (
+                  <span
+                    key={emoji}
+                    className={styles.emoji}
+                    onClick={() => handleEmojiClick(emoji)}
+                  >
+                    {emoji}
+                  </span>
+                ))}
+              </div>
+            )}
+            </div>
           </div>
         </div>
       </div>
