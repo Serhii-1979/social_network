@@ -10,12 +10,6 @@ import likeRoutes from './routes/likeRoutes.js';
 import followRoutes from './routes/followRoutes.js';
 import notificationRoutes from './routes/notificationRoutes.js';
 
-// Настройка Cloudinary
-export const cloud = cloudinary.config({
-    cloud_name: 'dc9xg0zud',
-    api_key: '158937964864549',
-    api_secret: 'mTRUTCe_tL02UhG1X2z71ap6kDk'
-})
 
 // Инициализация приложения Express
 const app = express();
