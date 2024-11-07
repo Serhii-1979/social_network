@@ -1,16 +1,15 @@
 import React from "react";
 import PostPage from "./PostPage";
-
-import Ex from "../../images/png/explore.jpg";
-
 import styles from "./Posts.module.css";
 
-function PostsCont() {
+function PostsCont({ post }) {
   return (
     <div className={styles.poster}>
-      <div className={styles.posterIMG}><img src={Ex} alt="img" /></div>
+      <div className={styles.posterIMG}>
+        <img src={post.image_url} alt={post.caption || "Post image"} />
+      </div>
       <div className={styles.posterLeft}>
-        <PostPage />
+        <PostPage user={post.user_id} post={post} /> {/* Передаем user и post в PostPage */}
       </div>
     </div>
   );

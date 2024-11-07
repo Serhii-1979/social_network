@@ -1,11 +1,9 @@
 .homepage {
   margin: 0 auto;
-  /* flex: 1; */
   display: flex;
-  /* flex-direction: column; */
+  flex-direction: column;
   justify-content: center;
-  /* align-items: center; */
-  padding: 2% 0 1rem 5%;
+  padding: 2% 0;
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 }
@@ -15,8 +13,8 @@
 .homepage_up {
   column-count: 2;
   column-gap: 1.5rem;
-  width: 100%; /* Уменьшаем ширину, чтобы контейнер был по центру */
-  max-width: 800px; /* Ограничиваем максимальную ширину для лучшего центрирования */
+  width: 100%;
+  max-width: 800px; 
   padding-top: 1rem;
 }
 

@@ -5,6 +5,7 @@
     width: 100%;
     display: flex;
     position: relative;
+    z-index: 4;
 }
 .cont_absolut {
     position: absolute;

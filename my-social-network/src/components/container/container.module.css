@@ -1,9 +1,10 @@
 .container {
-  width: 230px;
-  padding: 28px 13px;
+  /* width: 14.3rem; */
+  width: 100%;
+  padding: 1.75rem 2rem 0 0.81rem;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid #dbdbdb;
+  /* border-right: 1px solid #dbdbdb; */
   /* z-index: 2100; */
 }
 .container_img {

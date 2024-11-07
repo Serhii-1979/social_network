@@ -13,7 +13,7 @@ import AuthContainer from "./components/LogIn/AuthContainer";
 import HomePage from './Pages/HomePage/HomePage';
 import Profile from './Pages/Profile/Profile';
 import Edit from './Pages/Edit/Edit';
-// import Posts from './Pages/Posts/Posts';
+import Posts from './Pages/Posts/Posts';
 import NotFound from './Pages/NotFound/NotFound';
 import CreatePost from "./Pages/CreatePost/CreatePost";
 import ProfileUser from "./Pages/ProfUser/ProfileUser";
@@ -42,7 +42,7 @@ function App() {
           <Route path="/profuser/:userId" element={<ProfileUser />} />
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
-          {/* <Route path="/posts" element={<Posts />} /> */}
+          <Route path="/posts" element={<Posts />} />
           <Route path="/edit" element={<Edit />} />
           <Route path="/profuser" element={<ProfileUser />} />
           <Route path="create" element={<CreatePost />} />

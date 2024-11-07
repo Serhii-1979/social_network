@@ -2,7 +2,7 @@
 
 .container {
   margin: 0 auto;
-  width: 100%;
+  width: 80%;
   height: 100%;
   display: flex;
   justify-content: center;
@@ -18,8 +18,8 @@
 
 .cont_img {
   width: 90%;
-  column-count: 3; /* Устанавливаем количество колонок */
-  column-gap: 0.2rem; /* Зазор между колонками */
+  column-count: 3;
+  column-gap: 0.2rem;
 }
 
 .cont_img img {

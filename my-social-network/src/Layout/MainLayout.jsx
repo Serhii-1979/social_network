@@ -9,7 +9,10 @@ function MainLayout() {
 
   return (
     <div className={styles.layout}>
+      <div className={styles.layoutCont}>
       <Container />
+      </div>
+      
       <div className={styles.content}>
         <Outlet />
         <Footer />

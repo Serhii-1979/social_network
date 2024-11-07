@@ -4,7 +4,8 @@ import Post from '../models/postModel.js';
 // Получение комментариев к посту
 export const getPostComments = async (req, res) => {
   try {
-    const comments = await Comment.find({ post_id: req.params.postId });
+    const comments = await Comment.find({ post_id: req.params.postId })
+    .populate('user_id', 'username profile_image');;
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).json({ error: 'Ошибка при получении комментариев' });
@@ -13,7 +14,8 @@ export const getPostComments = async (req, res) => {
 
 // Создание комментария
 export const createComment = async (req, res) => {
-  const { postId, userId } = req.params;
+  const { postId} = req.params;
+  const userId = req.user.id;
   const { comment_text } = req.body;
 
   try {
