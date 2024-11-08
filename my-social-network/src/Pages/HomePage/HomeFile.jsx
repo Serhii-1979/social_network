@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { $api } from "../../utils/api.ts";
+import { useDispatch } from "react-redux";
+import { getTimeAgo } from "../../utils/time.js"
+import { likePost } from "../../store/slices/postSlice";
 import styles from "./HomeFile.module.css";
 import Ava from "../../images/png/ava.jpg";
 import Heart from "../../images/svg/Heart.svg";
@@ -13,40 +15,11 @@ function HomeFile({ user, post }) {
   const [liked, setLiked] = useState(false);
   const [showFullBio, setShowFullBio] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleLike = async () => {
-    try {
-      await $api.post(`/post/${post._id}/like/${user._id}`);
-      setLiked(true);
-    } catch (error) {
-      console.error("Ошибка при лайке поста:", error);
-    }
-  };
-
-  const getTimeAgo = (date) => {
-    if (!date) return "N/A"; // Если дата отсутствует, возвращаем "N/A"
-    const parsedDate = new Date(date);
-    if (isNaN(parsedDate)) return "Invalid Date"; // Если дата некорректна, возвращаем сообщение
-    
-    const now = new Date();
-    const diffMs = now - parsedDate;
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-    const diffWeeks = Math.floor(diffDays / 7);
-    const diffMonths = Math.floor(diffDays / 30); // приближенно, для простоты
-    const diffYears = Math.floor(diffDays / 365); // приближенно, для простоты
-  
-    if (diffHours < 24) {
-      return `${diffHours} hour${diffHours !== 1 ? "s" : ""}`;
-    } else if (diffDays < 7) {
-      return `${diffDays} day${diffDays !== 1 ? "s" : ""}`;
-    } else if (diffWeeks < 4) {
-      return `${diffWeeks} week${diffWeeks !== 1 ? "s" : ""}`;
-    } else if (diffMonths < 12) {
-      return `${diffMonths} month${diffMonths !== 1 ? "s" : ""}`;
-    } else {
-      return `${diffYears} year${diffYears !== 1 ? "s" : ""}`;
-    }
+  const handleLike = () => {
+    dispatch(likePost({ postId: post._id, userId: user._id }));
+    setLiked(true);
   };
   
 

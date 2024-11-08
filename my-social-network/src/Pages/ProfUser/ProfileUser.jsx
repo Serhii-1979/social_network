@@ -1,26 +1,39 @@
-import React, { useEffect } from "react";
+// ProfileUser.jsx
+
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { fetchUserById } from "../../store/slices/userSlice";
-import BackIMG from "../../images/png/Background.png";
+import Posts from "../Posts/Posts"; // Компонент для модального окна с постом
 import styles from "../Profile/Profile.module.css";
 
-const placeholderImage =
-  "https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png";
+const placeholderImage = "https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png";
 
 function ProfileUser() {
   const { userId } = useParams();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const [selectedPost, setSelectedPost] = useState(null);
 
+  // Получаем пользователя из состояния Redux
   const user = useSelector((state) => state.user.currentUser);
-  // const posts = user?.posts || []; 
+  const status = useSelector((state) => state.user.status);
 
   useEffect(() => {
-    dispatch(fetchUserById(userId));
+    if (userId) {
+      dispatch(fetchUserById(userId)); // Загружаем данные пользователя по ID
+    }
   }, [dispatch, userId]);
 
-  if (!user) return <div>Loading...</div>;
+  if (status === 'loading') return <div>Loading...</div>;
+
+  const handlePostClick = (post) => {
+    // Передаем как `selectedPost` весь объект поста и пользователя
+    setSelectedPost({ ...post, user });
+  };
+
+  const handleCloseModal = () => {
+    setSelectedPost(null);
+  };
 
   return (
     <div className={styles.profile}>
@@ -28,62 +41,29 @@ function ProfileUser() {
         <div className={styles.profileHeader}>
           <div className={styles.profileLogo}>
             <button className={styles.profileBtn}>
-              <img src={user.profile_image || BackIMG} alt="logo" />
+              <img src={user?.profile_image || placeholderImage} alt="Profile" />
             </button>
           </div>
           <div className={styles.profileContent}>
-            <div className={styles.profileContent_it}>
-              <button className={`${styles.profileLink_1} h3_20`}>
-                {user.username}
-              </button>
-              <div className={styles.profileBtnCont}>
-                <button className={`${styles.profileLink} p_14Bold_black`}>
-                  follow
-                </button>
-                <button
-                  className={`${styles.profileLink_2} p_14Bold_black`}
-                  onClick={() => navigate("/messages")}
-                >
-                  message
-                </button>
-              </div>
-            </div>
-            <div className={styles.profilePosts}>
-              <p>
-                <span className="p_16Bold">{user.posts_count}</span> posts
-              </p>
-              <p>
-                <span className="p_16Bold">{user.followers_count}</span>{" "}
-                followers
-              </p>
-              <p>
-                <span className="p_16Bold">{user.following_count}</span>{" "}
-                following
-              </p>
-            </div>
-            <div className={styles.profilePosts_content}>
-              <p className="p_14Small">
-                • {user.bio || "User bio not provided."}
-              </p>
-              <p className={`${styles.name} p_14Small`}>{user.full_name}</p>
-            </div>
+            <h3>{user?.username || "Username"}</h3>
+            <p>{user?.bio || "User bio not available"}</p>
           </div>
         </div>
 
-        {/* Отображение постов с изображениями */}
+        {/* Список постов */}
         <div className={styles.profileList}>
-          {user.posts.length > 0 ? (
+          {user?.posts?.length > 0 ? (
             user.posts.map((post, index) => (
               <div key={post._id} className={styles.profileList_cont}>
-                <Link
-                  to={`/post/${post._id}`}
+                <div
                   className={styles.profileList_cont_img}
+                  onClick={() => handlePostClick(post)}
                 >
                   <img
                     src={post.image_url || placeholderImage}
                     alt={`post-${index}`}
                   />
-                </Link>
+                </div>
               </div>
             ))
           ) : (
@@ -91,6 +71,11 @@ function ProfileUser() {
           )}
         </div>
       </div>
+
+      {/* Модальное окно с постом */}
+      {selectedPost && (
+        <Posts post={selectedPost} onClose={handleCloseModal} />
+      )}
     </div>
   );
 }

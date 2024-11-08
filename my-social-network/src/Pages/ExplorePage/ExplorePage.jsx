@@ -1,59 +1,57 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchPosts } from "../../store/slices/postSlice";
 import styles from './ExplorePage.module.css';
-import { $api } from "../../utils/api.ts";
-import Posts from '../Posts/Posts';
+import ProfilePosts from '../Posts/ProfilePosts';
 
 function ExplorePage() {
-    const [posts, setPosts] = useState([]);
+    const dispatch = useDispatch();
+    const posts = useSelector((state) => state.post.posts);
+    const postStatus = useSelector((state) => state.post.status);
     const [isVisible, setIsVisible] = useState(false);
-    const [selectedPost, setSelectedPost] = useState(null); // Состояние для выбранного поста
+    const [selectedPost, setSelectedPost] = useState(null);
 
     useEffect(() => {
         setIsVisible(true);
         
-        const fetchPosts = async () => {
-            try {
-                const response = await $api.get("/post");
-                const allPosts = response.data;
-                const randomPosts = allPosts
-                    .sort(() => 0.5 - Math.random())
-                    .slice(0, 16);
-                setPosts(randomPosts);
-            } catch (error) {
-                console.error("Ошибка при загрузке постов:", error);
-            }
-        };
-
-        fetchPosts();
-    }, []);
+        // Загружаем посты только если они еще не загружены
+        if (postStatus === 'idle') {
+            dispatch(fetchPosts());
+        }
+    }, [dispatch, postStatus]);
 
     const handleImageClick = (post) => {
         setSelectedPost(post);
     };
 
     const handleClose = () => {
-        setSelectedPost(null); // Закрываем модальное окно
+        setSelectedPost(null);
     };
+
+    // Создаем копию массива постов, чтобы избежать изменения состояния напрямую
+    const randomPosts = [...posts]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 32);
 
     return (
         <div className={`${styles.container} ${isVisible ? styles.fadeIn : ''}`}>
             <div className={styles.cont_img}>
-                {posts.length > 0 ? (
-                    posts.map((post) => (
+                {postStatus === 'loading' ? (
+                    <p>Загрузка...</p>
+                ) : (
+                    randomPosts.map((post) => (
                         <img
                             key={post._id}
                             src={post.image_url}
                             alt={post.caption || "Random post"}
-                            onClick={() => handleImageClick(post)} // Обработчик клика
+                            onClick={() => handleImageClick(post)}
                         />
                     ))
-                ) : (
-                    <p>Загрузка...</p>
                 )}
             </div>
             
             {selectedPost && (
-                <Posts post={selectedPost} onClose={handleClose} /> // Отображаем Posts как модальное окно
+                <ProfilePosts post={selectedPost} onClose={handleClose} />
             )}
         </div>
     );

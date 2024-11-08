@@ -1,14 +1,14 @@
 // src/Pages/Posts/Posts.jsx
 import React from "react";
-import PostCont from './PostsCont';
+import ProfilePostCont from './ProfilePostCont';
 import styles from './Posts.module.css';
 
-function Posts({ post, onClose }) {
+function ProfilePosts({ post, onClose }) {
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>
         <div className={styles.postCon}>
-          <PostCont post={post} /> {/* Передаем post в PostCont */}
+          <ProfilePostCont post={post} /> {/* Передаем post в PostCont */}
         </div>
         <button className={styles.closeButton} onClick={onClose}>Close</button>
       </div>
@@ -16,4 +16,4 @@ function Posts({ post, onClose }) {
   );
 }
 
-export default Posts;
+export default ProfilePosts;

@@ -50,6 +50,7 @@
 }
 
 .comments {
+  font-family: "Roboto", sans-serif;
   height: 400px;
   /* height: 100%; */
   overflow-y: auto;
@@ -68,7 +69,9 @@
 .comments::-webkit-scrollbar-track {
   background: #f1f1f1; /* Цвет фона трека */
 }
-
+.commentsText {
+  font-family: "Roboto", sans-serif;
+}
 .comment {
   display: flex;
   justify-content: space-between;
@@ -77,22 +80,32 @@
   margin-bottom: 0.9rem;
   text-align: left;
 }
-.text{
-    display: flex;
-    align-items: center;
+.text {
+  display: flex;
+  align-items: center;
 }
 .like {
-    display: flex;
-    height: 100%;
-    margin-left: 8px;
+  display: flex;
+  height: 100%;
+  margin-left: 8px;
+  border: none;
+  background-color: transparent;
 }
-.like_5{
-    display: flex;
-    gap: 0.7rem;
-    margin-top: 4px;
+.like_5 {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 4px;
+}
+.like_5 span {
+  font-family: sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  line-height: 13.56px;
+  text-align: center;
+  color: grey;
 }
 .comment p {
-    max-width: 400px;
+  max-width: 400px;
   white-space: pre-wrap;
   text-align: left;
 }
@@ -128,6 +141,15 @@
   justify-content: start;
   align-items: self-start;
 }
+.likesSectionHeart {
+  display: flex;
+  align-items: center;
+gap: 3px;
+}
+.likesSectionBTN {
+  border: none;
+  background-color: transparent;
+}
 
 .commentInput {
   display: flex;
@@ -148,13 +170,13 @@
   border-radius: 4px;
 }
 .commentInputBtn {
- padding: 0 3px 0 0 !important;
+  padding: 0 3px 0 0 !important;
 }
-.commentInputBtn2{
+.commentInputBtn2 {
   padding: 0 0 0 4px !important;
 }
 .commentInput button {
- /* padding-right: 0 !important; */
+  /* padding-right: 0 !important; */
   margin: 0;
 }
 

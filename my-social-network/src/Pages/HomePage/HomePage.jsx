@@ -10,7 +10,7 @@ import HomeFile from "./HomeFile";
 function HomePage() {
   
   const dispatch = useDispatch();
-  // const users = useSelector((state) => state.user.users);
+  const users = useSelector((state) => state.user.users);
   const posts = useSelector((state) => state.post.posts);
   const userStatus = useSelector((state) => state.user.status);
   const postStatus = useSelector((state) => state.post.status);
@@ -37,7 +37,7 @@ function HomePage() {
       <div className={styles.homepage_up}>
         {posts.length > 0 ? (
           posts.map((post) => (
-            <HomeFile key={post._id} user={post.user_id} post={post} />
+            <HomeFile key={post._id} user={post.user_id} post={post} users={users} />
           ))
         ) : (
           <p>Нет доступных постов</p>

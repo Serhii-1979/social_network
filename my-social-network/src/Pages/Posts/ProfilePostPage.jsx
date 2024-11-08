@@ -11,7 +11,7 @@ import styles from "./PostPage.module.css";
 
 const popularEmojis = ["😂", "😍", "😢", "👏", "🔥", "🥳", "❤️"];
 
-function PostPage({ user, post }) {
+function ProfilePostPage({ user, post }) {
   const [commentText, setCommentText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const dispatch = useDispatch();
@@ -148,4 +148,4 @@ function PostPage({ user, post }) {
   );
 }
 
-export default PostPage;
+export default ProfilePostPage;

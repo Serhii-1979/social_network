@@ -53,9 +53,16 @@ const userSlice = createSlice({
         state.status = 'succeeded';
         state.users = action.payload;
       })
+      .addCase(fetchUserById.pending, (state) => {
+        state.status = 'loading';
+      })
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.currentUser = action.payload;
+        state.currentUser = action.payload; // Получаем пользователя вместе с его постами
+      })
+      .addCase(fetchUserById.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
       })
       .addCase(fetchCurrentUser.pending, (state) => {
         state.status = 'loading';
