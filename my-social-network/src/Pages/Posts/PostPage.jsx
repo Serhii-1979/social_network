@@ -12,6 +12,9 @@ import styles from "./PostPage.module.css";
 const popularEmojis = ["😂", "😍", "😢", "👏", "🔥", "🥳", "❤️"];
 
 function PostPage({ user, post }) {
+  console.log("User in PostPage:", user); // Проверка user
+  console.log("Post in PostPage:", post);
+
   const [commentText, setCommentText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const dispatch = useDispatch();

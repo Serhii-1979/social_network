@@ -9,13 +9,20 @@ const upload = multer({ storage });
 // Получение профиля конкретного пользователя по его ID
 export const getCurrentUserProfile = async (req, res) => {
   try {
-    const user = req.user;
+    const user = await User.findById(req.user._id)
+      .select("-password")
+      .populate({
+        path: "posts",
+        model: "Post",
+        select: "image_url caption created_at",
+      });
+
     if (!user) {
-      return res.status(404).json({ message: 'Пользователь не найден' });
+      return res.status(404).json({ message: "Пользователь не найден" });
     }
     res.status(200).json(user);
   } catch (error) {
-    res.status(500).json({ message: 'Ошибка получения профиля текущего пользователя', error: error.message });
+    res.status(500).json({ message: "Ошибка получения профиля текущего пользователя", error: error.message });
   }
 };
 
@@ -27,9 +34,9 @@ export const getUserProfile = async (req, res) => {
     const user = await User.findById(userId)
       .select('-password')
       .populate({
-        path: 'posts', // Указываем путь к постам
-        model: 'Post', // Указываем, что это модель Post
-        select: 'image_url caption created_at' // Указываем поля, которые хотим получить
+        path: 'posts',
+        model: 'Post',
+        select: 'image_url caption created_at'
       });
 
     if (!user) {

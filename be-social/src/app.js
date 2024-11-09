@@ -13,7 +13,7 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 
 dotenv.config();
 
-// Настройка Cloudinary с использованием переменных из .env
+
 export const cloud = cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,

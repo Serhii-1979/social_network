@@ -1,19 +1,21 @@
-// src/Pages/Posts/PostsCont.jsx
+// PostsCont.jsx
+
 import React from "react";
-import ProfilePostPage from "./ProfilePostPage";
+import PostPage from "./PostPage";
 import styles from "./Posts.module.css";
 
-function ProfilePostCont({ post, user }) {
+function PostsContExplore({ post }) {
+  console.log("Post in PostsCont:", post);
   return (
     <div className={styles.poster}>
       <div className={styles.posterIMG}>
         <img src={post.image_url} alt={post.caption || "Post image"} />
       </div>
       <div className={styles.posterLeft}>
-        <ProfilePostPage user={user} post={post} /> {/* Передаем user и post в PostPage */}
+        <PostPage user={post.user_id} post={post} />
       </div>
     </div>
   );
 }
 
-export default ProfilePostCont;
+export default PostsContExplore;

@@ -4,6 +4,7 @@ import PostCont from './PostsCont';
 import styles from './Posts.module.css';
 
 function Posts({ post, onClose }) {
+  console.log("Post in Posts component:", post);
   return (
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>

@@ -72,7 +72,6 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Неверный email/имя пользователя или пароль' });
     }
 
-    // Генерация токена
     const token = generateToken(user);
     // console.log("Совпадение логина:", token);
 
@@ -83,38 +82,6 @@ export const login = async (req, res) => {
     res.status(500).json({ message: 'Ошибка авторизации', error: error.message });
   }
 };
-
-
-
-//Запрос на сброс пароля
-// export const requestPasswordReset = async (req, res) => {
-//   const { email } = req.body;
-//   console.log("Запрос на сброс пароля для:", email);
-
-//   try {
-//     const user = await User.findOne({ email });
-//     if (!user) {
-//       return res.status(404).json({ message: 'Пользователь с таким email не найден' });
-//     }
-
-//     const resetToken = crypto.randomBytes(32).toString('hex');
-//     user.resetPasswordToken = resetToken;
-//     user.resetPasswordExpires = Date.now() + 3600000; // 1 час
-//     await user.save();
-
-//     const resetUrl = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-//     await sendEmail({
-//       to: user.email,
-//       subject: 'Сброс пароля',
-//       text: `Перейдите по ссылке для сброса пароля: ${resetUrl}`,
-//     });
-
-//     res.status(200).json({ message: 'Ссылка для сброса пароля отправлена на email' });
-//   } catch (error) {
-//     console.error("Ошибка отправки письма:", error);
-//     res.status(500).json({ message: 'Ошибка отправки письма', error: error.message });
-//   }
-// };
 
 export const resetPassword = async (req, res) => {
   const { token, newPassword } = req.body;

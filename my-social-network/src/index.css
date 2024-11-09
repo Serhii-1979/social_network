@@ -199,6 +199,8 @@ h3 {
   padding: 0 0.75rem;
   border: none;
   background-color: transparent;
+  /* z-index: 3; */
+  cursor: pointer;
 }
 .back {
   width: 100%;

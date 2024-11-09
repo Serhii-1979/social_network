@@ -18,21 +18,24 @@ export const fetchUserById = createAsyncThunk('user/fetchUserById', async (userI
 // Получение данных текущего пользователя
 
 
-export const fetchCurrentUser = createAsyncThunk('user/fetchCurrentUser', async (_, { getState }) => {
+export const fetchCurrentUser = createAsyncThunk('user/fetchCurrentUser', async (_, { getState, rejectWithValue }) => {
   const state = getState();
-  const token = state.auth?.token || localStorage.getItem('token'); // Получаем токен из состояния или localStorage
+  const token = state.auth?.token || localStorage.getItem('token');
 
-  if (!token) throw new Error("Token is missing");
+  if (!token) return rejectWithValue("Token is missing");
 
-  const response = await $api.get('/user/current', {
-    headers: {
-      Authorization: `Bearer ${token}`, // Передаем токен в заголовке Authorization
-    },
-  });
-
-  return response.data;
+  try {
+    const response = await $api.get('/user/current', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Ошибка получения профиля пользователя:", error.response?.data || error.message);
+    return rejectWithValue("Ошибка получения профиля пользователя");
+  }
 });
-
 
 
 const userSlice = createSlice({
@@ -61,6 +64,7 @@ const userSlice = createSlice({
         state.currentUser = action.payload; // Получаем пользователя вместе с его постами
       })
       .addCase(fetchUserById.rejected, (state, action) => {
+        console.log('Авторизованный пользователь:', action.payload);
         state.status = 'failed';
         state.error = action.error.message;
       })

@@ -5,6 +5,7 @@ import PostPage from "./PostPage";
 import styles from "./Posts.module.css";
 
 function PostsCont({ post }) {
+  console.log("Post in PostsCont:", post);
   return (
     <div className={styles.poster}>
       <div className={styles.posterIMG}>

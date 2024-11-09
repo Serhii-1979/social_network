@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchPosts } from "../../store/slices/postSlice";
 import styles from './ExplorePage.module.css';
-import ProfilePosts from '../Posts/ProfilePosts';
+import PostsExplore from '../Posts/PostsExplore';
 
 function ExplorePage() {
     const dispatch = useDispatch();
@@ -51,7 +51,7 @@ function ExplorePage() {
             </div>
             
             {selectedPost && (
-                <ProfilePosts post={selectedPost} onClose={handleClose} />
+                <PostsExplore post={selectedPost} onClose={handleClose} />
             )}
         </div>
     );

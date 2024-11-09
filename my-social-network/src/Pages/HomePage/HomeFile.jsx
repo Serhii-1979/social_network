@@ -6,7 +6,7 @@ import { likePost } from "../../store/slices/postSlice";
 import styles from "./HomeFile.module.css";
 import Ava from "../../images/png/ava.jpg";
 import Heart from "../../images/svg/Heart.svg";
-import RedHeartIcon from "../../images/svg/RedHeart.svg";
+import RedHeartIcon from "../../images/png/icons8.png";
 import MessageImg from "../../images/svg/message-img.svg";
 
 const placeholderImage = "https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png";
@@ -54,7 +54,7 @@ function HomeFile({ user, post }) {
 
       <div className={styles.cont_down}>
         <div className={styles.down_button}>
-          <button
+          <button className={styles.heart}
             onClick={(e) => {
               e.stopPropagation();
               handleLike();

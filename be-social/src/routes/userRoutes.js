@@ -10,11 +10,11 @@ import authMiddleware from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-// Получение профиля конкретного пользователя по ID
-router.get('/:userId', getUserProfile);
-
 // Получение профиля текущего пользователя
 router.get('/current', authMiddleware, getCurrentUserProfile);
+
+// Получение профиля конкретного пользователя по ID
+router.get('/:userId', getUserProfile);
 
 // Получение всех пользователей
 router.get('/', getAllUsers);

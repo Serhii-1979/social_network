@@ -106,9 +106,12 @@ opacity: 1;
   margin-top: 0.5rem;
 }
 /* .profileText {
-}
-.profilePosts_content {
 } */
+.profilePosts_content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
 .profile_a {
   display: flex;
 }
