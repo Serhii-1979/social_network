@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 // import HomePage from "../HomePage/HomePage";
-import CreatePosts from "./CreatePosts";
-import PostActions from "./PostActions";
+import CreatePosts from "./CreatePosts.jsx";
+import PostActions from "./PostActions.jsx";
 import { $api } from "../../utils/api.ts"; // Убедитесь, что $api настроен для работы с Axios
 
 import styles from "./CreatePost.module.css";

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
+import { followUser, unfollowUser } from "../../store/slices/userSlice";
 import { fetchUserById } from "../../store/slices/userSlice";
 import Posts from "../Posts/Posts";
 import styles from "../Profile/Profile.module.css";
@@ -10,19 +11,30 @@ import styles from "../Profile/Profile.module.css";
 const placeholderImage = "https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png";
 
 function ProfileUser() {
-  const { userId } = useParams();
+  const userId = useParams().userId;
   const dispatch = useDispatch();
   const [selectedPost, setSelectedPost] = useState(null);
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.user.currentUser);
+  const authUserId = useSelector((state) => state.auth.userId);
+  console.log("authUserId:", authUserId);
   const status = useSelector((state) => state.user.status);
 
+
+  const [isFollowing, setIsFollowing] = useState(false);
+  
   useEffect(() => {
     if (userId) {
       dispatch(fetchUserById(userId));
     }
   }, [dispatch, userId]);
+
+  useEffect(() => {
+    if (user && user.followers) {
+      setIsFollowing(user.followers.some(follower => follower._id === authUserId));
+    }
+  }, [user, authUserId]);
 
   if (status === "loading" || !user) return <div>Loading...</div>;
 
@@ -33,6 +45,30 @@ function ProfileUser() {
   const handleCloseModal = () => {
     setSelectedPost(null);
   };
+
+  const handleFollowToggle = async () => {
+    if (!authUserId || !userId) {
+      console.error("Отсутствует authUserId или userId");
+      return;
+    }
+  
+    try {
+      if (isFollowing) {
+        console.log("Отписка:", { userId: authUserId, targetUserId: userId });
+        await dispatch(unfollowUser({ userId: authUserId, targetUserId: userId }));
+        setIsFollowing(false);
+      } else {
+        console.log("Подписка:", { userId: authUserId, targetUserId: userId });
+        await dispatch(followUser({ userId: authUserId, targetUserId: userId }));
+        setIsFollowing(true);
+      }
+    } catch (error) {
+      console.error("Ошибка при подписке/отписке:", error);
+    }
+  };
+  
+  
+  
 
   return (
     <div className={styles.profile}>
@@ -47,7 +83,12 @@ function ProfileUser() {
             <div className={styles.profileContent_it}>
               <h3>{user?.username || "Username"}</h3>
               <div className={styles.profileBtnCont}>
-                <button className={`${styles.profileLink} p_14Bold_black`}>follow</button>
+              <button
+                  className={`${styles.profileLink} p_14Bold_black`}
+                  onClick={handleFollowToggle}
+                >
+                  {isFollowing ? "Unfollow" : "Follow"}
+                </button>
                 <button
                   className={`${styles.profileLink_2} p_14Bold_black`}
                   onClick={() => navigate("/messages")}

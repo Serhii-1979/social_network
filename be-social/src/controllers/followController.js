@@ -1,3 +1,5 @@
+// followController.js
+
 import Follow from '../models/followModel.js';
 import User from '../models/userModel.js';
 
@@ -52,7 +54,11 @@ export const followUser = async (req, res) => {
     await user.save();
     await targetUser.save();
 
-    res.status(201).json(follow);
+    res.status(201).json({
+      message: 'Подписка успешно оформлена',
+      followers_count: targetUser.followers_count,
+      following_count: user.following_count
+    });
   } catch (error) {
     res.status(500).json({ error: 'Ошибка при подписке на пользователя' });
   }
@@ -79,7 +85,11 @@ export const unfollowUser = async (req, res) => {
     await user.save();
     await targetUser.save();
 
-    res.status(200).json({ message: 'Вы отписались от пользователя' });
+    res.status(200).json({
+      message: 'Вы успешно отписались от пользователя',
+      followers_count: targetUser.followers_count,
+      following_count: user.following_count
+    });
   } catch (error) {
     res.status(500).json({ error: 'Ошибка при отписке от пользователя' });
   }

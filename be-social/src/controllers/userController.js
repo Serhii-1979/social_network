@@ -1,6 +1,8 @@
 import User from '../models/userModel.js';
 import getUserIdFromToken from '../utils/helpers.js';
+import { uploadImageToCloudinary } from "../utils/cloudinary.js";
 import multer from 'multer';
+import { v2 as cloudinary } from 'cloudinary';
 
 // Настройка multer для загрузки изображений
 const storage = multer.memoryStorage(); // Сохраняем файл в памяти
@@ -50,31 +52,40 @@ export const getUserProfile = async (req, res) => {
 
 // Обновление профиля текущего пользователя
 export const updateUserProfile = async (req, res) => {
-  const userId = getUserIdFromToken(req); // Идентифицируем пользователя по токену
+  const userId = getUserIdFromToken(req);
+
   try {
     const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ message: 'Пользователь не найден' });
     }
 
-    const { username, bio } = req.body;
-
-    // Обновляем имя пользователя и био, если они переданы
+    const { username, bio, full_name } = req.body;
+    
+    // Обновляем данные пользователя, если они переданы
     if (username) user.username = username;
     if (bio) user.bio = bio;
+    if (full_name) user.full_name = full_name;
 
-    // Если передано изображение, преобразуем его в Base64
+    // Если есть новое изображение профиля
     if (req.file) {
-      const base64Image = req.file.buffer.toString('base64'); // Преобразуем файл в Base64
-      user.profile_image = base64Image;
+      try {
+        const imageUrl = await uploadImageToCloudinary(req.file.buffer);
+        user.profile_image = imageUrl; // Сохраняем URL изображения
+      } catch (error) {
+        console.error("Ошибка загрузки изображения в Cloudinary:", error);
+        return res.status(500).json({ message: "Ошибка загрузки изображения" });
+      }
     }
 
     const updatedUser = await user.save();
     res.status(200).json(updatedUser);
   } catch (error) {
-    res.status(500).json({ message: 'Ошибка обновления профиля', error: error.message });
+    console.error("Ошибка обновления профиля:", error);
+    res.status(500).json({ message: "Ошибка обновления профиля", error: error.message });
   }
 };
+
 
 // Получение всех пользователей
 export const getAllUsers = async (req, res) => {

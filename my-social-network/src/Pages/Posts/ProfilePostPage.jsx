@@ -3,22 +3,29 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getTimeAgo } from "../../utils/time.js";
 import { fetchComments, addComment } from "../../store/slices/postSlice";
-import { fetchPostLikes, likePost, unlikePost } from "../../store/slices/likeSlice";
+import {
+  fetchPostLikes,
+  likePost,
+  unlikePost,
+} from "../../store/slices/likeSlice";
 import smileIcon from "../../images/svg/smile.svg";
 import heartIcon from "../../images/svg/Heart.svg";
 import heartRedIcon from "../../images/svg/Heart-red.svg";
+import punkt from "../../images/svg/111.svg";
 import styles from "./PostPage.module.css";
 
 const popularEmojis = ["😂", "😍", "😢", "👏", "🔥", "🥳", "❤️"];
 
-function ProfilePostPage({ user, post }) {
+function ProfilePostPage({ user, post, toggleView }) {
   const [commentText, setCommentText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
   const dispatch = useDispatch();
+  // const navigate = useNavigate();
 
   // Получаем комментарии и лайки из состояния Redux
   const comments = useSelector((state) => state.post.comments[post?._id]) || [];
-  const likes = useSelector((state) => state.likes.likesByPost[post?._id]) || [];
+  const likes =
+    useSelector((state) => state.likes.likesByPost[post?._id]) || [];
   const currentUserId = useSelector((state) => state.auth.userId);
 
   useEffect(() => {
@@ -56,15 +63,21 @@ function ProfilePostPage({ user, post }) {
   return (
     <div className={styles.postPage}>
       <div className={styles.header}>
-        <Link to={`/profuser/${user._id}`} className={styles.headerBtn}>
-          <img
-            src={user.profile_image || "default-image-url"}
-            alt="Profile"
-            className={styles.avatar}
-          />
-          <p className={styles.username}>{user.username || "Unknown User"}</p>
-        </Link>
-        <button className={styles.followButton}>Follow</button>
+        <div className={styles.headerHead}>
+          <Link to={`/profuser/${user._id}`} className={styles.headerBtn}>
+            <img
+              src={user.profile_image || "default-image-url"}
+              alt="Profile"
+              className={styles.avatar}
+            />
+            <p className={styles.username}>{user.username || "Unknown User"}</p>
+          </Link>
+          <button className={styles.followButton}>Follow</button>
+        </div>
+
+        <button className={styles.headerBTN} onClick={toggleView} >
+          <img src={punkt} alt="img" />
+        </button>
       </div>
 
       <div>
@@ -130,20 +143,22 @@ function ProfilePostPage({ user, post }) {
             Send
           </button>
         </div>
-      </div>
-      {showEmojis && (
-        <div className={styles.emojiPicker}>
-          {popularEmojis.map((emoji) => (
-            <span
-              key={emoji}
-              onClick={() => handleEmojiClick(emoji)}
-              className={styles.emoji}
-            >
-              {emoji}
-            </span>
-          ))}
+        <div className={styles.emojiCont}>
+          {showEmojis && (
+            <div className={styles.emojiPicker}>
+              {popularEmojis.map((emoji) => (
+                <span
+                  key={emoji}
+                  onClick={() => handleEmojiClick(emoji)}
+                  className={styles.emoji}
+                >
+                  {emoji}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

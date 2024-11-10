@@ -2,16 +2,16 @@
 import React from "react";
 import styles from "./PostActions.module.css";
 
-function PostActions() {
+function PostActions({ onCancel, onDelete }) {
   return (
     <div className={styles.actionsContainer}>
-      <button className={styles.actionButton} style={{ color: "red" }}>
+      <button className={styles.actionButton} onClick={onDelete} >
         Delete
       </button>
       <button className={styles.actionButton}>Edit</button>
       <button className={styles.actionButton}>Go to post</button>
       <button className={styles.actionButton}>Copy link</button>
-      <button className={styles.actionButton}>Cancel</button>
+      <button className={styles.actionButton} onClick={onCancel}>Cancel</button>
     </div>
   );
 }

@@ -1,6 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import LogoName from "../../images/svg/ICHGRA 5.svg";
 import Home from "../../images/svg/Vector.svg";
 import Search from "../../images/svg/search.svg";
@@ -17,10 +17,15 @@ import styles from "./container.module.css";
 function Container() {
   const { i18n } = useTranslation();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user.currentUser);
+  // const user = useSelector((state) => state.user.currentUser);
+  const [userAvatar, setUserAvatar] = useState(null);
 
   useEffect(() => {
-    dispatch(fetchCurrentUser()); // Запрашиваем данные текущего пользователя
+    dispatch(fetchCurrentUser()).then((action) => {
+      if (action.payload?.profile_image) {
+        setUserAvatar(action.payload.profile_image); // Сохраняем аватар при первой загрузке
+      }
+    });
   }, [dispatch]);
 
   const changeLanguage = (lng) => {
@@ -48,7 +53,7 @@ function Container() {
       </div>
       <div className={styles.container_profile}>
         <ListItem
-          icon={user?.profile_image || Profile}
+          icon={userAvatar || Profile}
           textKey="profile"
           path="/profile"
         />

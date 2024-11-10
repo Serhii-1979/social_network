@@ -55,9 +55,6 @@ export const createPost = async (req, res) => {
   }
 };
 
-
-
-
 // Удаление поста
 export const deletePost = async (req, res) => {
   const { postId } = req.params;
@@ -69,8 +66,11 @@ export const deletePost = async (req, res) => {
     await Post.findByIdAndDelete(postId);
 
     const user = await User.findById(post.user_id);
-    user.posts_count -= 1;
-    await user.save();
+    if (user) {
+      user.posts_count -= 1;
+      user.posts = user.posts.filter(id => id.toString() !== postId);
+      await user.save();
+    }
 
     res.status(200).json({ message: "Пост удалён" });
   } catch (error) {

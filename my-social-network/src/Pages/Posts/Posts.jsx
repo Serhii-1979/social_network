@@ -9,7 +9,7 @@ function Posts({ post, onClose }) {
     <div className={styles.modalOverlay} onClick={onClose}>
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>
         <div className={styles.postCon}>
-          <PostCont post={post} /> {/* Передаем post в PostCont */}
+          <PostCont post={post} />
         </div>
         <button className={styles.closeButton} onClick={onClose}>Close</button>
       </div>

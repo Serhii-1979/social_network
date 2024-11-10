@@ -24,8 +24,8 @@
 
 .cont_img img {
   width: 100%;
-  margin-bottom: 0.3rem; /* Расстояние между изображениями по вертикали */
-  display: block; /* Избегаем пробелов между элементами */
-  object-fit: cover; /* Изображение заполняет блок */
-  border-radius: 8px; /* Добавляем радиус, чтобы выглядело аккуратнее */
+  margin-bottom: 0.3rem;
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
 }

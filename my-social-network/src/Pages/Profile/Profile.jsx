@@ -3,18 +3,22 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchCurrentUser } from "../../store/slices/userSlice";
+import { deletePost } from "../../store/slices/postSlice";
 import ProfilePosts from "../Posts/ProfilePosts";
 import styles from "./Profile.module.css";
+import { useNavigate } from "react-router-dom";
+import IMG from "../../images/png/empty.jpg"
 
-const placeholderImage = "https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png";
+const placeholderImage =
+  "https://netsh.pp.ua/wp-content/uploads/2017/08/Placeholder-1.png";
 
 function Profile() {
   const dispatch = useDispatch();
   const [selectedPost, setSelectedPost] = useState(null);
   const { currentUser, status, error } = useSelector((state) => state.user);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Запрашиваем данные о текущем пользователе при каждом открытии профиля
     dispatch(fetchCurrentUser());
   }, [dispatch]);
 
@@ -33,6 +37,12 @@ function Profile() {
     setSelectedPost(null);
   };
 
+  const handleDeletePost = (postId) => {
+    dispatch(deletePost(postId)).then(() => {
+      setSelectedPost(null); // Закрыть модальное окно после удаления
+    });
+  };
+
   return (
     <div className={styles.profile}>
       <div className={styles.profileMain}>
@@ -40,7 +50,7 @@ function Profile() {
           <div className={styles.profileLogo}>
             <button className={styles.profileBtn}>
               <img
-                src={currentUser.profile_image || "path/to/default/avatar.jpg"}
+                src={currentUser.profile_image || {IMG}}
                 alt="User Avatar"
               />
             </button>
@@ -50,24 +60,38 @@ function Profile() {
               <p className={`${styles.profileLink_1} h3_20`}>
                 {currentUser.username || "Username"}
               </p>
-              <p className={`${styles.profileLinkMyProf} p_14Bold_black`}>
+              <button
+                className={`${styles.profileLinkMyProf} p_14Bold_black`}
+                onClick={() => navigate("/edit")}
+              >
                 Edit profile
-              </p>
+              </button>
             </div>
             <div className={styles.profilePosts}>
               <p>
-                <span className="p_16Bold">{currentUser.posts_count || 0}</span> posts
+                <span className="p_16Bold">{currentUser.posts_count || 0}</span>{" "}
+                posts
               </p>
               <p>
-                <span className="p_16Bold">{currentUser.followers_count || 0}</span> followers
+                <span className="p_16Bold">
+                  {currentUser.followers_count || 0}
+                </span>{" "}
+                followers
               </p>
               <p>
-                <span className="p_16Bold">{currentUser.following_count || 0}</span> following
+                <span className="p_16Bold">
+                  {currentUser.following_count || 0}
+                </span>{" "}
+                following
               </p>
             </div>
             <div className={styles.profilePosts_content}>
-              <p className="p_14Small">{currentUser.bio || "No bio available."}</p>
-              <p className={`${styles.name} p_14Small`}>{currentUser?.full_name}</p>
+              <p className="p_14Small">
+                {currentUser.bio || "No bio available."}
+              </p>
+              <p className={`${styles.name} p_14Small`}>
+                {currentUser?.full_name}
+              </p>
             </div>
           </div>
         </div>
@@ -80,7 +104,10 @@ function Profile() {
                   className={styles.profileList_cont_img}
                   onClick={() => handlePostClick(post)}
                 >
-                  <img src={post.image_url || placeholderImage} alt={`post-${index}`} />
+                  <img
+                    src={post.image_url || placeholderImage}
+                    alt={`post-${index}`}
+                  />
                 </div>
               </div>
             ))
@@ -90,7 +117,15 @@ function Profile() {
         </div>
       </div>
       {/* Модальное окно с постом */}
-      {selectedPost && <ProfilePosts post={selectedPost} onClose={handleCloseModal} currentUser={currentUser}/>}
+      {selectedPost && (
+        <ProfilePosts
+          post={selectedPost}
+          onClose={handleCloseModal}
+          currentUser={currentUser}
+          onCancel={handleCloseModal}
+          onDelete={handleDeletePost}
+        />
+      )}
     </div>
   );
 }
