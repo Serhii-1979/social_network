@@ -1,10 +1,11 @@
+// routes/messageRoutes.js
+
 import jwt from 'jsonwebtoken';
 import { loadMessages, sendMessage } from '../controllers/messageController.js';
 import User from '../models/userModel.js';
 
-// Проверка JWT токена для WebSocket
 export const authenticateSocket = async (socket, next) => {
-  const token = socket.handshake.auth.token; // Извлекаем токен из handshake.auth
+  const token = socket.handshake.auth.token;
 
   if (!token) {
     return next(new Error('Доступ запрещен. Токен не предоставлен.'));
@@ -15,37 +16,31 @@ export const authenticateSocket = async (socket, next) => {
     const user = await User.findById(decoded.user_id);
 
     if (!user) {
-      return next(new Error('Пользователь не найден.'));
+      return next(new Error('User not found.'));
     }
 
-    // Добавляем проверенного пользователя в socket
     socket.user = user;
     next();
   } catch (error) {
-    return next(new Error('Неверный токен.'));
+    return next(new Error('Invalid token.'));
   }
 };
 
-// Обработка WebSocket событий
 export const messageSocketHandler = (socket, io) => {
-  // Подключение пользователя к комнате
   socket.on('joinRoom', ({ targetUserId }) => {
-    const userId = socket.user._id; // Используем userId из проверенного токена
+    const userId = socket.user._id;
     const roomId = [userId, targetUserId].sort().join('_');
     socket.join(roomId);
 
-    // Загрузка истории сообщений при подключении
     loadMessages(userId, targetUserId, socket);
   });
 
-  // Отправка сообщений
   socket.on('sendMessage', ({ targetUserId, messageText }) => {
-    const userId = socket.user._id; // Используем userId из токена
+    const userId = socket.user._id;
     const roomId = [userId, targetUserId].sort().join('_');
     sendMessage(userId, targetUserId, messageText, roomId, io);
   });
 
-  // Отключение пользователя
   socket.on('disconnect', () => {
     console.log('Пользователь отключился');
   });

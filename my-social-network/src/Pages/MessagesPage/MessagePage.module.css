@@ -15,7 +15,11 @@
   display: flex;
   gap: 0.7rem;
 }
+.message_img {
+  max-width: 2.5rem;
+}
 .message_img img {
+  width: 100%;
   border: 1px solid var(--border-grey);
   border-radius: 50%;
 }

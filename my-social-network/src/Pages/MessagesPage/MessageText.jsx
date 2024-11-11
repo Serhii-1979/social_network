@@ -1,32 +1,41 @@
+// src/Pages/MessagesPage/MessageText.jsx
+
 import React from "react";
-import Ava1 from "../../images/png/ava1.png";
-import Ava2 from "../../images/png/ava2.png";
+import Nik from "../../images/png/empty.jpg";
 import styles from "./MessageText.module.css";
 
-function MessageText() {
+function MessageText({ messages, authUserId }) {
   return (
     <div className={styles.chatContainer}>
-      <div className={styles.chatContainerCont}>
-        <img src={Ava1} alt="User Avatar" className={styles.avatar} />
-        <div className={`${styles.message} ${styles.messageLeft}`}>
-          <div className={styles.messageText}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          </div>
+      {messages.map((message, index) => (
+        <div key={index} className={styles.chatContainerCont}>
+          {message.sender_id === authUserId ? (
+            // Сообщение отправителя
+            <>
+              <div className={`${styles.message} ${styles.messageRight}`}>
+                <div className={styles.messageText}>{message.message_text}</div>
+              </div>
+              <img
+                src={(authUserId.profile_image || Nik)} // Здесь следует загрузить изображение авторизованного пользователя
+                alt="Avat"
+                className={styles.avatar}
+              />
+            </>
+          ) : (
+            // Сообщение получателя
+            <>
+              <img
+                src={message.receiver?.profile_image || Nik}
+                alt="Avat"
+                className={styles.avatar}
+              />
+              <div className={`${styles.message} ${styles.messageLeft}`}>
+                <div className={styles.messageText}>{message.message_text}</div>
+              </div>
+            </>
+          )}
         </div>
-      </div>
-
-      <div className={styles.chatContainerCont}>
-        <div className={`${styles.message} ${styles.messageRight}`}>
-          <div className={styles.messageText}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do Lorem ipsum dolor sit amet,
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do Lorem ipsum dolor sit amet,
-            
-          </div>
-        </div>
-        <img src={Ava2} alt="User Avatar" className={styles.avatar} />
-      </div>
-      
+      ))}
     </div>
   );
 }
