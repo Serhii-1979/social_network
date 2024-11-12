@@ -86,12 +86,39 @@ export const unfollowUser = createAsyncThunk(
   }
 );
 
+// Получение времени последнего сообщения с конкретным пользователем
+export const fetchLastMessageDate = createAsyncThunk(
+  'user/fetchLastMessageDate',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await $api.get(`/messages/lastMessageDate/${userId}`);
+      return { userId, lastMessageDate: response.data.lastMessageDate };
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
+// Получение времени последнего сообщения и текста последнего сообщения для каждого пользователя
+export const fetchLastMessageForUser = createAsyncThunk(
+  'user/fetchLastMessageForUser',
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await $api.get(`/messages/lastMessageBetweenUsers/${userId}`);
+      return { userId, ...response.data }; // Вернуть данные с ID пользователя
+    } catch (error) {
+      return rejectWithValue(error.response.data);
+    }
+  }
+);
+
 
 const userSlice = createSlice({
   name: 'user',
   initialState: {
     users: [],
     currentUser: null,
+    lastMessages: {},
     status: 'idle',
     error: null,
   },
@@ -130,6 +157,14 @@ const userSlice = createSlice({
         state.status = 'failed';
         state.error = action.error.message;
       })
+      .addCase(fetchLastMessageForUser.fulfilled, (state, action) => {
+        const { userId, lastMessageDate, lastMessageText } = action.payload;
+        console.log("Last message data:", action.payload);
+        state.lastMessages[userId] = {
+          lastMessageDate,
+          lastMessageText,
+        };
+      })
       .addCase(updateUserProfile.pending, (state) => {
         state.status = "loading";
       })
@@ -149,6 +184,12 @@ const userSlice = createSlice({
       .addCase(unfollowUser.fulfilled, (state, action) => {
         if (state.currentUser) {
           state.currentUser.following_count -= 1;
+        }
+      })
+      .addCase(fetchLastMessageDate.fulfilled, (state, action) => {
+        const user = state.users.find((u) => u._id === action.payload.userId);
+        if (user) {
+          user.lastMessageDate = action.payload.lastMessageDate;
         }
       });
       

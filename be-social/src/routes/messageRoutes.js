@@ -1,8 +1,12 @@
 // routes/messageRoutes.js
 
+import express from 'express';
 import jwt from 'jsonwebtoken';
-import { loadMessages, sendMessage } from '../controllers/messageController.js';
+import { loadMessages, sendMessage, getLastMessageDate, getLastMessageBetweenUsers  } from '../controllers/messageController.js';
 import User from '../models/userModel.js';
+import authMiddleware from '../middlewares/authMiddleware.js'; // Не забудьте также импортировать authMiddleware, если его используете
+
+const router = express.Router();
 
 export const authenticateSocket = async (socket, next) => {
   const token = socket.handshake.auth.token;
@@ -45,3 +49,11 @@ export const messageSocketHandler = (socket, io) => {
     console.log('Пользователь отключился');
   });
 };
+
+// Маршрут для получения времени последнего сообщения между пользователями
+router.get('/lastMessageDate/:userId', authMiddleware, getLastMessageDate);
+
+// Новый маршрут для получения последнего сообщения между пользователями
+router.get('/lastMessageBetweenUsers/:userId', authMiddleware, getLastMessageBetweenUsers);
+
+export default router;
