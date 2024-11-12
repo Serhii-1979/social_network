@@ -175,6 +175,7 @@ h3 {
   border-bottom-right-radius: 16px;
   display: flex;
   flex-direction: column;
+  /* justify-content: flex-start; */
   gap: 1rem;
   background-color: #fff;
   position: fixed;

@@ -8,10 +8,15 @@
     z-index: 4;
 }
 .cont_absolut {
-    position: absolute;
+    /* position: absolute; */
+    display: flex;
     z-index: 2;
     opacity: 0; 
     transition: opacity 0.3s ease-in-out;
+}
+.searchBack{
+    width: 100%;
+    display: flex;
 }
 
 .fadeIn {

@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { getTimeAgo } from "../../utils/time.js";
 import { fetchComments, addComment } from "../../store/slices/postSlice";
 import { fetchPostLikes, likePost, unlikePost } from "../../store/slices/likeSlice";
+import { followUser, unfollowUser, fetchCurrentUser } from "../../store/slices/userSlice";
 import smileIcon from "../../images/svg/smile.svg";
 import heartIcon from "../../images/svg/Heart.svg";
 import heartRedIcon from "../../images/svg/Heart-red.svg";
@@ -12,17 +13,19 @@ import styles from "./PostPage.module.css";
 const popularEmojis = ["😂", "😍", "😢", "👏", "🔥", "🥳", "❤️"];
 
 function PostPage({ user, post }) {
-  console.log("User in PostPage:", user); // Проверка user
+  console.log("User in PostPage:", user);
   console.log("Post in PostPage:", post);
 
   const [commentText, setCommentText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
+  const [isFollowing, setIsFollowing] = useState(false);
   const dispatch = useDispatch();
 
-  // Получаем комментарии и лайки из состояния Redux
+  // Получаем текущие данные пользователя и состояния из Redux
   const comments = useSelector((state) => state.post.comments[post?._id]) || [];
   const likes = useSelector((state) => state.likes.likesByPost[post?._id]) || [];
   const currentUserId = useSelector((state) => state.auth.userId);
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   useEffect(() => {
     if (post?._id) {
@@ -30,6 +33,38 @@ function PostPage({ user, post }) {
       dispatch(fetchPostLikes(post._id));
     }
   }, [dispatch, post?._id]);
+
+  useEffect(() => {
+    // Проверка, подписан ли текущий пользователь на владельца поста при первой загрузке компонента
+    if (user && currentUser) {
+      const isUserFollowing = currentUser.following?.some(
+        (followedUser) => followedUser._id === user._id
+      );
+      setIsFollowing(isUserFollowing);
+    }
+  }, [user, currentUser]);
+
+  const handleFollowToggle = async () => {
+    if (!currentUserId || !user?._id) {
+      console.error("Требуется авторизация для подписки.");
+      return;
+    }
+
+    try {
+      if (isFollowing) {
+        await dispatch(unfollowUser({ userId: currentUserId, targetUserId: user._id }));
+        setIsFollowing(false);
+      } else {
+        await dispatch(followUser({ userId: currentUserId, targetUserId: user._id }));
+        setIsFollowing(true);
+      }
+
+      // Обновляем информацию о текущем пользователе, чтобы получить актуальный список подписок
+      dispatch(fetchCurrentUser());
+    } catch (error) {
+      console.error("Ошибка при подписке/отписке:", error);
+    }
+  };
 
   const handleEmojiClick = (emoji) => {
     setCommentText(commentText + emoji);
@@ -67,13 +102,17 @@ function PostPage({ user, post }) {
           />
           <p className={styles.username}>{user.username || "Unknown User"}</p>
         </Link>
-        <button className={styles.followButton}>Follow</button>
+        <button
+          className={styles.followButton}
+          onClick={handleFollowToggle}
+        >
+          {isFollowing ? "Unfollow" : "Follow"}
+        </button>
       </div>
 
       <div>
         <div className={styles.description}>{post.caption}</div>
 
-        {/* Список комментариев */}
         <div className={styles.comments}>
           {comments.map((comment) => (
             <div key={comment._id} className={styles.comment}>
@@ -113,7 +152,6 @@ function PostPage({ user, post }) {
             </button>
             <span>{likes.length} likes</span>
           </div>
-
           <p className="p_10_400">1 day ago</p>
         </div>
         <div className={styles.commentInput}>

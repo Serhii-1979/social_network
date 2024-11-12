@@ -177,13 +177,21 @@ const userSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(followUser.fulfilled, (state, action) => {
+        const { followers_count, following_count } = action.payload;
         if (state.currentUser) {
-          state.currentUser.following_count += 1;
+          state.currentUser.following_count = following_count;
+        }
+        if (state.currentUser && state.currentUser._id === action.meta.arg.targetUserId) {
+          state.currentUser.followers_count = followers_count;
         }
       })
       .addCase(unfollowUser.fulfilled, (state, action) => {
+        const { followers_count, following_count } = action.payload;
         if (state.currentUser) {
-          state.currentUser.following_count -= 1;
+          state.currentUser.following_count = following_count;
+        }
+        if (state.currentUser && state.currentUser._id === action.meta.arg.targetUserId) {
+          state.currentUser.followers_count = followers_count;
         }
       })
       .addCase(fetchLastMessageDate.fulfilled, (state, action) => {
@@ -191,7 +199,7 @@ const userSlice = createSlice({
         if (user) {
           user.lastMessageDate = action.payload.lastMessageDate;
         }
-      });
+      })
       
   },
 });

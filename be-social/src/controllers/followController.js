@@ -26,10 +26,12 @@ export const getUserFollowing = async (req, res) => {
 // Подписка на пользователя
 export const followUser = async (req, res) => {
   const { userId, targetUserId } = req.params;
+  console.log("userId:", userId, "targetUserId:", targetUserId);
 
   try {
     const user = await User.findById(userId);
     const targetUser = await User.findById(targetUserId);
+    console.log("User:", user, "Target User:", targetUser);
 
     if (!user || !targetUser) {
       return res.status(404).json({ error: 'Пользователь не найден' });

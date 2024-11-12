@@ -1,13 +1,13 @@
 import styles from "./notifications.module.css";
 
-import Avatar from "../../images/png/notific_btn.jpg.png";
-import img2 from "../../images/png/notific_img_right.jpg.jpg";
+import Avatar from "../../images/png/empty.jpg";
+// import img2 from "../../images/png/empty.jpg";
 
 function NotifList() {
   return (
     <div className={styles.notific_list_cont}>
       <li className={styles.notific_li}>
-        <button className="notific_btn">
+        <button className={`${styles.notificBtnAva} notific_btn`}>
           <img src={Avatar} alt="avatar" />
         </button>
         <div className={styles.notific_btn_text}>
@@ -19,7 +19,7 @@ function NotifList() {
           </p>
         </div>
         <div className={styles.notific_li_img}>
-          <img src={img2} alt="img" />
+          <img src={Avatar} alt="img" />
         </div>
       </li>
     </div>

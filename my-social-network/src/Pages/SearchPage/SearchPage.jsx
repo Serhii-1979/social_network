@@ -18,7 +18,9 @@ function SearchPage() {
         <Search />
       </div>
       <div className="back"></div>
-      <HomePage />
+      <div className={styles.searchBack}>
+        <HomePage />
+      </div>
     </div>
   );
 }

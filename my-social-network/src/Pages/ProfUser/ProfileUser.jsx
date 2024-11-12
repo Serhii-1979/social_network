@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { followUser, unfollowUser } from "../../store/slices/userSlice";
-import { fetchUserById } from "../../store/slices/userSlice";
+import { followUser, unfollowUser, fetchUserById, fetchCurrentUser  } from "../../store/slices/userSlice";
 import Posts from "../Posts/Posts";
 import styles from "../Profile/Profile.module.css";
 
@@ -14,6 +13,7 @@ function ProfileUser() {
   const userId = useParams().userId;
   const dispatch = useDispatch();
   const [selectedPost, setSelectedPost] = useState(null);
+
   const navigate = useNavigate();
 
   const user = useSelector((state) => state.user.currentUser);
@@ -36,6 +36,13 @@ function ProfileUser() {
     }
   }, [user, authUserId]);
 
+  useEffect(() => {
+    if (!authUserId) {
+      console.warn("Не удалось загрузить authUserId. Загружаем текущего пользователя.");
+      dispatch(fetchCurrentUser());
+    }
+  }, [dispatch, authUserId]);
+
   if (status === "loading" || !user) return <div>Loading...</div>;
 
   const handlePostClick = (post) => {
@@ -54,18 +61,20 @@ function ProfileUser() {
   
     try {
       if (isFollowing) {
-        console.log("Отписка:", { userId: authUserId, targetUserId: userId });
         await dispatch(unfollowUser({ userId: authUserId, targetUserId: userId }));
         setIsFollowing(false);
       } else {
-        console.log("Подписка:", { userId: authUserId, targetUserId: userId });
         await dispatch(followUser({ userId: authUserId, targetUserId: userId }));
         setIsFollowing(true);
       }
+  
+      // Перезагружаем данные профиля для обновления счетчиков подписок
+      dispatch(fetchUserById(userId));
     } catch (error) {
       console.error("Ошибка при подписке/отписке:", error);
     }
   };
+  
   
   
   

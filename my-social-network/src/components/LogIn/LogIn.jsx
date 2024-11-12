@@ -4,10 +4,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { useDispatch } from "react-redux";
 import FadeTransition from "../../components/FadeTransition";
 import ICH from "../../images/svg/ICH2.svg";
 import Button from "../../components/button/button";
 import { $api } from "../../utils/api.ts";
+import { setToken } from "../../store/slices/authSlice";
+import { fetchCurrentUser } from "../../store/slices/userSlice.js";
 import styles from "./LogIn.module.css";
 
 const validationSchema = Yup.object().shape({
@@ -20,6 +23,7 @@ const validationSchema = Yup.object().shape({
 function LogIn() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loginError, setLoginError] = useState("");
 
   const {
@@ -37,12 +41,12 @@ function LogIn() {
         password: data.password,
       });
 
-      localStorage.setItem("token", response.data.token);
+      // Сохраните токен в Redux-состоянии и localStorage
+      dispatch(setToken(response.data.token));
+      dispatch(fetchCurrentUser());
       navigate("/home");
     } catch (error) {
-      setLoginError(
-        error.response?.data?.message || "Ошибка при авторизации"
-      );
+      setLoginError(error.response?.data?.message || "Ошибка при авторизации");
     }
   };
 
@@ -82,9 +86,7 @@ function LogIn() {
               {errors.password && (
                 <p className={styles.errorText}>{errors.password.message}</p>
               )}
-              {loginError && (
-                <p className={styles.errorText}>{loginError}</p>
-              )}
+              {loginError && <p className={styles.errorText}>{loginError}</p>}
             </div>
             <div className={styles.login_button}>
               <Button text={t("login")} type="submit" />

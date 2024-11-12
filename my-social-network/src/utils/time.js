@@ -20,7 +20,7 @@ export const getTimeAgo = (date) => {
     return "15 min";
   } else if (diffMinutes < 30) {
     return "30 min";
-  }else if (diffMinutes < 60) {
+  } else if (diffMinutes < 60) {
     return "1 hour";
   } else if (diffHours < 24) {
     return `${diffHours} hour${diffHours !== 1 ? "s" : ""}`;

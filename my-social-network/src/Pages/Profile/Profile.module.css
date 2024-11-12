@@ -73,6 +73,9 @@ opacity: 1;
   display: flex;
   gap: 0.5rem;
 }
+.profileBtnCont button {
+  cursor: pointer;
+}
 .profileLink {
   text-decoration: none;
   background-color: var(--button-color);
