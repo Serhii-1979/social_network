@@ -26,13 +26,10 @@ export const fetchCurrentUser = createAsyncThunk('user/fetchCurrentUser', async 
 
   try {
     const response = await $api.get('/user/current', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { Authorization: `Bearer ${token}` },
     });
     return response.data;
   } catch (error) {
-    console.error("Ошибка получения профиля пользователя:", error.response?.data || error.message);
     return rejectWithValue("Ошибка получения профиля пользователя");
   }
 });
@@ -63,10 +60,11 @@ export const updateUserProfile = createAsyncThunk(
 // Подписка на пользователя
 export const followUser = createAsyncThunk(
   'user/followUser',
-  async ({ userId, targetUserId }, { rejectWithValue }) => {
+  async (targetUserId, { getState, rejectWithValue }) => {
+    const { currentUser } = getState().user;
     try {
-      const response = await $api.post(`/follow/${userId}/follow/${targetUserId}`);
-      return response.data;
+      const response = await $api.post(`/follow/${currentUser._id}/follow/${targetUserId}`);
+      return { ...response.data, targetUserId }; // Возвращаем targetUserId, чтобы обновить состояние
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
@@ -76,16 +74,16 @@ export const followUser = createAsyncThunk(
 // Отписка от пользователя
 export const unfollowUser = createAsyncThunk(
   'user/unfollowUser',
-  async ({ userId, targetUserId }, { rejectWithValue }) => {
+  async (targetUserId, { getState, rejectWithValue }) => {
+    const { currentUser } = getState().user;
     try {
-      const response = await $api.delete(`/follow/${userId}/unfollow/${targetUserId}`);
-      return response.data;
+      const response = await $api.delete(`/follow/${currentUser._id}/unfollow/${targetUserId}`);
+      return { ...response.data, targetUserId }; // Возвращаем targetUserId, чтобы обновить состояние
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-
 // Получение времени последнего сообщения с конкретным пользователем
 export const fetchLastMessageDate = createAsyncThunk(
   'user/fetchLastMessageDate',
@@ -118,6 +116,8 @@ const userSlice = createSlice({
   initialState: {
     users: [],
     currentUser: null,
+    viewedUser: null,
+    followingUsers: [],
     lastMessages: {},
     status: 'idle',
     error: null,
@@ -137,23 +137,21 @@ const userSlice = createSlice({
       })
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        state.currentUser = action.payload; // Получаем пользователя вместе с его постами
+        state.viewedUser = action.payload;
       })
       .addCase(fetchUserById.rejected, (state, action) => {
-        console.log('Авторизованный пользователь:', action.payload);
         state.status = 'failed';
         state.error = action.error.message;
       })
+      // Обновление данных для текущего авторизованного пользователя
       .addCase(fetchCurrentUser.pending, (state) => {
         state.status = 'loading';
       })
       .addCase(fetchCurrentUser.fulfilled, (state, action) => {
-        console.log('Текущий пользователь:', action.payload);
         state.status = 'succeeded';
         state.currentUser = action.payload;
       })
       .addCase(fetchCurrentUser.rejected, (state, action) => {
-        console.error('Ошибка загрузки текущего пользователя:', action.error.message);
         state.status = 'failed';
         state.error = action.error.message;
       })
@@ -177,21 +175,23 @@ const userSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(followUser.fulfilled, (state, action) => {
-        const { followers_count, following_count } = action.payload;
-        if (state.currentUser) {
-          state.currentUser.following_count = following_count;
-        }
-        if (state.currentUser && state.currentUser._id === action.meta.arg.targetUserId) {
-          state.currentUser.followers_count = followers_count;
+        const { targetUserId, followers_count } = action.payload;
+        state.followingUsers.push(targetUserId); // Добавляем targetUserId в массив followingUsers
+
+        // Если viewedUser совпадает с целевым пользователем, обновляем его состояние
+        if (state.viewedUser && state.viewedUser._id === targetUserId) {
+          state.viewedUser.isFollowing = true;
+          state.viewedUser.followers_count = followers_count;
         }
       })
       .addCase(unfollowUser.fulfilled, (state, action) => {
-        const { followers_count, following_count } = action.payload;
-        if (state.currentUser) {
-          state.currentUser.following_count = following_count;
-        }
-        if (state.currentUser && state.currentUser._id === action.meta.arg.targetUserId) {
-          state.currentUser.followers_count = followers_count;
+        const { targetUserId, followers_count } = action.payload;
+        state.followingUsers = state.followingUsers.filter((id) => id !== targetUserId);
+
+        // Если viewedUser совпадает с целевым пользователем, обновляем его состояние
+        if (state.viewedUser && state.viewedUser._id === targetUserId) {
+          state.viewedUser.isFollowing = false;
+          state.viewedUser.followers_count = followers_count;
         }
       })
       .addCase(fetchLastMessageDate.fulfilled, (state, action) => {
@@ -199,7 +199,7 @@ const userSlice = createSlice({
         if (user) {
           user.lastMessageDate = action.payload.lastMessageDate;
         }
-      })
+      });
       
   },
 });

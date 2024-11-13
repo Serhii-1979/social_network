@@ -18,14 +18,15 @@ function PostPage({ user, post }) {
 
   const [commentText, setCommentText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
   const dispatch = useDispatch();
 
-  // Получаем текущие данные пользователя и состояния из Redux
+  // Получаем текущее состояние из Redux
   const comments = useSelector((state) => state.post.comments[post?._id]) || [];
   const likes = useSelector((state) => state.likes.likesByPost[post?._id]) || [];
   const currentUserId = useSelector((state) => state.auth.userId);
-  const currentUser = useSelector((state) => state.user.currentUser);
+  // const currentUser = useSelector((state) => state.user.currentUser);
+  const followingUsers = useSelector((state) => state.user.followingUsers); // Глобальное состояние подписок
+  const isFollowing = followingUsers.includes(user._id); // Проверка подписки на уровне Redux
 
   useEffect(() => {
     if (post?._id) {
@@ -33,16 +34,6 @@ function PostPage({ user, post }) {
       dispatch(fetchPostLikes(post._id));
     }
   }, [dispatch, post?._id]);
-
-  useEffect(() => {
-    // Проверка, подписан ли текущий пользователь на владельца поста при первой загрузке компонента
-    if (user && currentUser) {
-      const isUserFollowing = currentUser.following?.some(
-        (followedUser) => followedUser._id === user._id
-      );
-      setIsFollowing(isUserFollowing);
-    }
-  }, [user, currentUser]);
 
   const handleFollowToggle = async () => {
     if (!currentUserId || !user?._id) {
@@ -52,11 +43,9 @@ function PostPage({ user, post }) {
 
     try {
       if (isFollowing) {
-        await dispatch(unfollowUser({ userId: currentUserId, targetUserId: user._id }));
-        setIsFollowing(false);
+        await dispatch(unfollowUser(user._id)); // Отписка
       } else {
-        await dispatch(followUser({ userId: currentUserId, targetUserId: user._id }));
-        setIsFollowing(true);
+        await dispatch(followUser(user._id)); // Подписка
       }
 
       // Обновляем информацию о текущем пользователе, чтобы получить актуальный список подписок
@@ -168,7 +157,7 @@ function PostPage({ user, post }) {
             onChange={(e) => setCommentText(e.target.value)}
           />
           <button className={styles.commentInputBtn2} onClick={onSendComment}>
-            Send
+            Send 
           </button>
         </div>
       </div>

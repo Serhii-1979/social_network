@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getTimeAgo } from "../../utils/time.js"
+import { useDispatch, useSelector } from "react-redux";
+import { getTimeAgo } from "../../utils/time.js";
 import { likePost } from "../../store/slices/postSlice";
+import { followUser, unfollowUser } from "../../store/slices/userSlice";
 import styles from "./HomeFile.module.css";
 import Ava from "../../images/png/ava.jpg";
 import Heart from "../../images/svg/Heart.svg";
@@ -13,15 +14,25 @@ const placeholderImage = "https://netsh.pp.ua/wp-content/uploads/2017/08/Placeho
 
 function HomeFile({ user, post }) {
   const [liked, setLiked] = useState(false);
-  const [showFullBio, setShowFullBio] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const followingUsers = useSelector((state) => state.user.followingUsers);
+  const isFollowing = followingUsers.includes(user._id);
 
   const handleLike = () => {
     dispatch(likePost({ postId: post._id, userId: user._id }));
     setLiked(true);
   };
-  
+
+  const handleFollowToggle = (e) => {
+    e.stopPropagation();
+    if (isFollowing) {
+      dispatch(unfollowUser(user._id)); // Передаем user._id целевого пользователя
+    } else {
+      dispatch(followUser(user._id)); // Передаем user._id целевого пользователя
+    }
+  };
 
   return (
     <div
@@ -39,11 +50,9 @@ function HomeFile({ user, post }) {
           <p className="p_punkt">•</p>
           <button
             className="buttonAva"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
+            onClick={handleFollowToggle}
           >
-            follow
+            {isFollowing ? "Unfollow" : "Follow"}
           </button>
         </div>
       </div>
@@ -54,7 +63,8 @@ function HomeFile({ user, post }) {
 
       <div className={styles.cont_down}>
         <div className={styles.down_button}>
-          <button className={styles.heart}
+          <button
+            className={styles.heart}
             onClick={(e) => {
               e.stopPropagation();
               handleLike();
@@ -77,19 +87,8 @@ function HomeFile({ user, post }) {
         <div className={styles.down_description}>
           <p className="p_12Bold italic">
             <span className="p_12Bold">{user.username || "Username"}</span>{" "}
-            {showFullBio ? post.caption : `${post.caption?.slice(0, 6)}...`}
+            {post.caption}
           </p>
-          {post.caption?.length > 6 && (
-            <button
-              className="p_12SmallGrey"
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowFullBio(!showFullBio);
-              }}
-            >
-              {showFullBio ? "less" : "more"}
-            </button>
-          )}
         </div>
         <div>
           <p className="p_12SmallGrey">
