@@ -33,17 +33,27 @@ const authSlice = createSlice({
       state.token = action.payload;
       state.isAuthenticated = true;
       localStorage.setItem('token', action.payload);
+  
+      const decoded = decodeToken(action.payload);
+      console.log("Decoded Token:", decoded); // Лог для проверки
+      state.userId = decoded?.user_id || decoded?.id;
+      console.log("Set User ID:", state.userId); // Лог для проверки
+  },
+    // setToken: (state, action) => {
+    //   state.token = action.payload;
+    //   state.isAuthenticated = true;
+    //   localStorage.setItem('token', action.payload);
 
-      // Декодируем токен и сохраняем userId
-      try {
-        const decoded = decodeToken(action.payload); // Используем альтернативную функцию декодирования
-        state.userId = decoded?.user_id || decoded?.id; // Попытка получить `user_id` или `id`
-        console.log('Decoded Token:', decoded);
-        console.log('Decoded User ID:', state.userId);
-      } catch (error) {
-        console.error('Ошибка декодирования токена:', error);
-      }
-    },
+    //   // Декодируем токен и сохраняем userId
+    //   try {
+    //     const decoded = decodeToken(action.payload); // Используем альтернативную функцию декодирования
+    //     state.userId = decoded?.user_id || decoded?.id; // Попытка получить `user_id` или `id`
+    //     console.log('Decoded Token:', decoded);
+    //     console.log('Decoded User ID:', state.userId);
+    //   } catch (error) {
+    //     console.error('Ошибка декодирования токена:', error);
+    //   }
+    // },
     removeToken: (state) => {
       state.token = null;
       state.isAuthenticated = false;

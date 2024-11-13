@@ -28,6 +28,7 @@ export const fetchCurrentUser = createAsyncThunk('user/fetchCurrentUser', async 
     const response = await $api.get('/user/current', {
       headers: { Authorization: `Bearer ${token}` },
     });
+    console.log("Fetched current user:", response.data);
     return response.data;
   } catch (error) {
     return rejectWithValue("Ошибка получения профиля пользователя");

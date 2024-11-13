@@ -16,6 +16,7 @@ function Profile() {
   const dispatch = useDispatch();
   const [selectedPost, setSelectedPost] = useState(null);
   const { currentUser, status, error } = useSelector((state) => state.user);
+  console.log("Profile User ID:", currentUser._id); // Лог в Profile
   const navigate = useNavigate();
 
   useEffect(() => {
