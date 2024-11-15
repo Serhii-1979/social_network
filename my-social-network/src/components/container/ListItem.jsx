@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import Ava from "../../images/png/empty.jpg"
 import styles from "./container.module.css";
 
 function ListItem({ icon, activeIcon, textKey, path, className }) {
@@ -20,7 +21,7 @@ function ListItem({ icon, activeIcon, textKey, path, className }) {
           {textKey === "profile" ? (
             <div className={styles.avaImg}>
               <img
-                src={icon}
+                src={icon || Ava}
                 alt="User Avatar"
                 className={styles.profileAvatar}
               />

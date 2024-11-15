@@ -110,6 +110,7 @@ const postSlice = createSlice({
       })
       .addCase(addComment.fulfilled, (state, action) => {
         const { postId, comment } = action.payload;
+      
         if (state.comments[postId]) {
           state.comments[postId].push(comment);
         } else {

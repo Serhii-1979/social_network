@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { getTimeAgo } from "../../utils/time.js";
@@ -19,31 +19,39 @@ const popularEmojis = ["😂", "😍", "😢", "👏", "🔥", "🥳", "❤️"]
 function ProfilePostPage({ user, post, toggleView }) {
   const [commentText, setCommentText] = useState("");
   const [showEmojis, setShowEmojis] = useState(false);
-  const dispatch = useDispatch();
-  // const navigate = useNavigate();
+  const [isLoadingComments, setIsLoadingComments] = useState(false); // состояние загрузки комментариев
 
-  // Получаем комментарии и лайки из состояния Redux
+  const dispatch = useDispatch();
+
   const comments = useSelector((state) => state.post.comments[post?._id]) || [];
-  const likes =
-    useSelector((state) => state.likes.likesByPost[post?._id]) || [];
-  const currentUserId = useSelector((state) => state.auth.userId);
+  const likes = useSelector((state) => state.likes.likesByPost[post?._id]) || [];
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const currentUserId = currentUser?._id;
+
+  // Загружаем комментарии с сервера и отслеживаем процесс загрузки
+  const loadComments = useCallback(async () => {
+    setIsLoadingComments(true);
+    await dispatch(fetchComments(post._id));
+    setIsLoadingComments(false);
+  }, [dispatch, post._id]);
 
   useEffect(() => {
-    if (post?._id) {
-      dispatch(fetchComments(post._id));
-      dispatch(fetchPostLikes(post._id));
-    }
-  }, [dispatch, post?._id]);
+    loadComments();
+    dispatch(fetchPostLikes(post._id));
+  }, [loadComments, dispatch, post._id]);
 
   const handleEmojiClick = (emoji) => {
     setCommentText(commentText + emoji);
     setShowEmojis(false);
   };
 
-  const onSendComment = () => {
+  const onSendComment = async () => {
     if (!commentText.trim()) return;
-    dispatch(addComment({ postId: post._id, comment_text: commentText }));
-    setCommentText("");
+
+    await dispatch(addComment({ postId: post._id, comment_text: commentText }));
+    setCommentText(""); // Очищаем поле ввода
+
+    loadComments(); // Обновляем комментарии после отправки
   };
 
   const onLike = () => {
@@ -75,7 +83,7 @@ function ProfilePostPage({ user, post, toggleView }) {
           <button className={styles.followButton}>Follow</button>
         </div>
 
-        <button className={styles.headerBTN} onClick={toggleView} >
+        <button className={styles.headerBTN} onClick={toggleView}>
           <img src={punkt} alt="img" />
         </button>
       </div>
@@ -85,29 +93,33 @@ function ProfilePostPage({ user, post, toggleView }) {
 
         {/* Список комментариев */}
         <div className={styles.comments}>
-          {comments.map((comment) => (
-            <div key={comment._id} className={styles.comment}>
-              <div className={styles.text}>
-                <img
-                  src={
-                    comment.user_id?.profile_image ||
-                    "default-profile-image-url"
-                  }
-                  alt="Profile"
-                  className={styles.commentAvatar}
-                />
-                <div className={styles.commentsText}>
-                  <span className={styles.commentUsername}>
-                    {comment.user_id?.username || "Anonymous"}
-                  </span>{" "}
-                  {comment.comment_text}
-                  <div className={styles.like_5}>
-                    <span>{getTimeAgo(comment.created_at)}</span>
+          {isLoadingComments ? (
+            <p>Loading comments...</p>
+          ) : (
+            comments.map((comment) => (
+              <div key={comment._id} className={styles.comment}>
+                <div className={styles.text}>
+                  <img
+                    src={
+                      comment.user_id?.profile_image ||
+                      "default-profile-image-url"
+                    }
+                    alt="Profile"
+                    className={styles.commentAvatar}
+                  />
+                  <div className={styles.commentsText}>
+                    <span className={styles.commentUsername}>
+                      {comment.user_id?.username || "Anonymous"}
+                    </span>{" "}
+                    {comment.comment_text}
+                    <div className={styles.like_5}>
+                      <span>{getTimeAgo(comment.created_at)}</span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </div>
 

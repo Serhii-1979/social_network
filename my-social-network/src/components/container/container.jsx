@@ -88,15 +88,12 @@ function Container() {
               icon={userAvatar || Profile}
               textKey="profile"
               path="/profile"
+              className={styles.ImgSmallScreen}
             />
           {/* </div> */}
         </div>
       </div>
 
-      {/* <div className={styles.languageSwitcher}>
-        <button onClick={() => changeLanguage("en")}>EN</button>
-        <button onClick={() => changeLanguage("ru")}>RU</button>
-      </div> */}
     </div>
   );
 }

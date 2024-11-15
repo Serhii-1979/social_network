@@ -51,7 +51,7 @@ function Profile() {
           <div className={styles.profileLogo}>
             <button className={styles.profileBtn}>
               <img
-                src={currentUser.profile_image || {IMG}}
+                src={currentUser.profile_image || IMG}
                 alt="User Avatar"
               />
             </button>

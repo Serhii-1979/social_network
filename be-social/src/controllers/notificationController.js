@@ -5,21 +5,18 @@ import User from '../models/userModel.js';
 import Post from '../models/postModel.js';
 
 // Получение всех уведомлений пользователя
-// notificationController.js
 export const getUserNotifications = async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    // Находим все лайки на посты текущего пользователя
     const likedPosts = await Post.find({ user_id: userId }).select("_id");
     const likedPostIds = likedPosts.map((post) => post._id);
 
     const likes = await Like.find({ post_id: { $in: likedPostIds } })
       .populate("user_id", "username profile_image")
-      .populate("post_id", "image_url") // Добавляем image_url из post_id
+      .populate("post_id", "image_url")
       .sort({ created_at: -1 });
 
-    // Находим все подписки на текущего пользователя
     const follows = await Follow.find({ followed_user_id: userId })
       .populate("follower_user_id", "username profile_image")
       .sort({ created_at: -1 });
@@ -29,7 +26,7 @@ export const getUserNotifications = async (req, res) => {
       _id: like._id,
       type: "like",
       user: like.user_id,
-      post_id: like.post_id, // Включаем post_id с image_url
+      post_id: like.post_id, 
       created_at: like.created_at,
     }));
 
