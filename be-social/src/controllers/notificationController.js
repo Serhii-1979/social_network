@@ -1,15 +1,58 @@
 import Notification from '../models/notificationModel.js';
+import Like from '../models/likeModel.js';
+import Follow from '../models/followModel.js';
 import User from '../models/userModel.js';
+import Post from '../models/postModel.js';
 
 // Получение всех уведомлений пользователя
+// notificationController.js
 export const getUserNotifications = async (req, res) => {
   try {
-    const notifications = await Notification.find({ user_id: req.params.userId }).sort({ created_at: -1 });
+    const userId = req.params.userId;
+
+    // Находим все лайки на посты текущего пользователя
+    const likedPosts = await Post.find({ user_id: userId }).select("_id");
+    const likedPostIds = likedPosts.map((post) => post._id);
+
+    const likes = await Like.find({ post_id: { $in: likedPostIds } })
+      .populate("user_id", "username profile_image")
+      .populate("post_id", "image_url") // Добавляем image_url из post_id
+      .sort({ created_at: -1 });
+
+    // Находим все подписки на текущего пользователя
+    const follows = await Follow.find({ followed_user_id: userId })
+      .populate("follower_user_id", "username profile_image")
+      .sort({ created_at: -1 });
+
+    // Формируем уведомления для лайков
+    const likeNotifications = likes.map((like) => ({
+      _id: like._id,
+      type: "like",
+      user: like.user_id,
+      post_id: like.post_id, // Включаем post_id с image_url
+      created_at: like.created_at,
+    }));
+
+    // Формируем уведомления для подписок
+    const followNotifications = follows.map((follow) => ({
+      _id: follow._id,
+      type: "follow",
+      user: follow.follower_user_id,
+      created_at: follow.created_at,
+    }));
+
+    // Собираем все уведомления в один массив и сортируем их по дате
+    const notifications = [...likeNotifications, ...followNotifications].sort(
+      (a, b) => b.created_at - a.created_at
+    );
+
     res.status(200).json(notifications);
   } catch (error) {
-    res.status(500).json({ error: 'Ошибка при получении уведомлений' });
+    console.error("Ошибка при получении уведомлений:", error);
+    res.status(500).json({ error: "Ошибка при получении уведомлений" });
   }
 };
+
 
 // Создание нового уведомления
 export const createNotification = async (req, res) => {

@@ -22,3 +22,25 @@
 .fadeIn {
     opacity: 1;
 }
+
+@media (max-width: 430px) {
+    .container {
+        width: 100%;
+    }
+
+    .cont_absolut {
+        /* position: fixed; */
+        width: 100%;
+        width: 90%;
+        opacity: 1;
+    }
+    .searchBack {
+        /* display: none; */
+    }
+    .fadeIn {
+        opacity: 1;
+        /* position: absolute;
+        left: 0;
+        top: 0; */
+    }
+}

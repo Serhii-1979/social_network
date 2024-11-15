@@ -91,7 +91,7 @@ function HomeFile({ user, post }) {
           <button
             onClick={(e) => {
               e.stopPropagation();
-              navigate("/create/createpost");
+              navigate("/messages");
             }}
           >
             <img src={MessageImg} alt="message" />

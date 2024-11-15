@@ -20,6 +20,7 @@
   margin: 0 0 3rem 20%;
 }
 .profileLogo {
+  display: flex;
   max-width: 9.3rem;
   max-height: 9.3rem;
 }
@@ -158,3 +159,46 @@ opacity: 1;
 }
 
 
+@media (max-width: 430px) {
+  .profile {
+    padding: 0;
+    padding-bottom: 1.78rem;
+  }
+  .profileList {
+    max-width: 100%;
+    width: 100%;
+    column-count: 2;
+    padding: 0;
+  }
+  .profileMain {
+    width: 100%;
+    padding: 1.5rem 0.3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  .profileHeader {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    /* align-items: center; */
+    gap: 5%;
+    margin: 0.5rem 2rem ;
+    padding-left: 0.5rem;
+  }
+  .profileBtn {
+    border: none;
+    width: 5.3rem;
+    height: 5.3rem;
+    border-radius: 50%;
+    padding: 0.25rem;
+  }
+  .profileContent {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+  }
+}

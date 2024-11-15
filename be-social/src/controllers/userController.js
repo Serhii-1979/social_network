@@ -90,12 +90,17 @@ export const updateUserProfile = async (req, res) => {
 // Получение всех пользователей
 export const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find().select('-password'); // Извлекаем всех пользователей, кроме пароля
+    const users = await User.find()
+      .select('-password') // Исключаем пароль
+      .populate({
+        path: 'posts', // Указываем поле `posts`, которое хотим "пополнить"
+        select: 'image_url caption created_at', // Получаем только нужные поля постов
+      });
+
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: 'Ошибка при получении пользователей', error: error.message });
   }
 };
-
 // Экспорт загрузки для использования в маршрутах
 export const uploadProfileImage = upload.single('profile_image');

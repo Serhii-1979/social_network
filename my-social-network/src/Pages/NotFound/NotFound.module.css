@@ -40,3 +40,21 @@
   line-height: 20px;
   text-align: left;
 }
+
+
+@media (max-width: 430px) {
+  .rigth {
+    display: none;
+    width: 100%;
+  }
+  
+  .left {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .h1 {
+    text-align: center;
+  }
+}

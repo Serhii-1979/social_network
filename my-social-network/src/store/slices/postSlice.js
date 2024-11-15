@@ -9,6 +9,12 @@ export const fetchPosts = createAsyncThunk("post/fetchPosts", async () => {
   return response.data;
 });
 
+// Получение всех постов текущего пользователя
+export const fetchUserPosts = createAsyncThunk("post/fetchUserPosts", async () => {
+  const response = await $api.get("/post/all"); // Получить посты текущего пользователя
+  return response.data;
+});
+
 // Асинхронное действие для получения конкретного поста по ID
 export const fetchPostById = createAsyncThunk(
   "post/fetchPostById",

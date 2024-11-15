@@ -1,6 +1,5 @@
 .createPost {
   width: 100%;
-  /* position: relative; */
 }
 /* .createPostFix {
 
@@ -148,4 +147,30 @@
    top: 0;
    left: 20%;
    /* transform: translateX(-50%); */
+}
+
+@media (max-width: 430px) {
+  .container {
+    width: 100%;
+    height: 100vh;
+    max-width: 900px;
+    margin-top: 0;
+    padding: 1rem;
+  }
+  .content {
+    display: flex;
+    flex-direction: column;
+    
+  }
+  .uploadSection {
+    width: 100%;
+    height: 40%;
+    border-bottom: 1px solid #dbdbdb;
+    border-right: none;
+padding: 1rem 1rem 3rem;
+    color: #8e8e8e;
+  }
+  .uploadSection img {
+    width: 90%;
+  }
 }

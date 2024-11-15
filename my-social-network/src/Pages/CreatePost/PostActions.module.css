@@ -34,3 +34,10 @@
 .actionButton:hover {
   background-color: #f0f0f0;
 }
+
+@media (max-width: 430px) {
+  .actionsContainer {
+    height: auto;
+    justify-content: center;
+  }
+}

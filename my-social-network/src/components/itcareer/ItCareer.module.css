@@ -1,6 +1,7 @@
 .container {
   width: 40%;
   display: flex;
+justify-content: center;
   flex-direction: column;
   border-right: 1px solid var(--border-grey);
 }
@@ -64,4 +65,17 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 200px;
+}
+
+@media (max-width: 1200px) {
+  .cont_up {
+    padding: 1.5rem 0.5rem;
+  }
+  .cont_button {
+    width: 100%;
+    padding: 0.5rem 1.5rem 0.5rem 0;
+    margin-left: 0;
+    /* border: none; */
+    /* background-color: transparent; */
+  }
 }

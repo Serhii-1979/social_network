@@ -5,7 +5,7 @@ import { $api } from '../../utils/api.ts';
 
 // Получение всех пользователей
 export const fetchUsers = createAsyncThunk('user/fetchUsers', async () => {
-  const response = await $api.get('/user');
+  const response = await $api.get('/user?populate=posts');
   return response.data;
 });
 

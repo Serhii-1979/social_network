@@ -11,10 +11,10 @@ function NotFound() {
         <img src={BG} alt="img" />
       </div>
       <div className={styles.left}>
-        <h1 className={styles.h1}>Oops! Page Not Found (404 Error)</h1>
+        <h1 className={styles.h1}>Page Not Found</h1>
         <p className={styles.p_error}>
-          We're sorry, but the page you're looking for doesn't seem to exist. <br /> If
-          you typed the URL manually, please double-check the spelling. <br />If you
+          We're sorry, but the page you're looking for doesn't seem to exist. <br /> <br /> If
+          you typed the URL manually, please double-check the spelling. <br /> <br />If you
           clicked on a link, it may be outdated or broken.
         </p>
         <Link to="/home" className={styles.btn}>Home</Link>

@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import styles from "./container.module.css";
 
-function ListItem({ icon, textKey, path }) {
+function ListItem({ icon, activeIcon, textKey, path, className }) {
   const { t } = useTranslation();
 
   return (
@@ -11,26 +11,28 @@ function ListItem({ icon, textKey, path }) {
       to={path}
       className={({ isActive }) =>
         isActive
-          ? `${styles.container_li} ${styles.active}`
-          : styles.container_li
+          ? `${styles.container_li} ${styles.active} ${className || ''}`
+          : `${styles.container_li} ${className || ''}`
       }
     >
-      <div className={styles.container_li_img}>
-        {textKey === "profile" ? (
-          <div className={styles.avaImg}>
-            <img
-              src={icon}
-              alt="User Avatar"
-              className={styles.profileAvatar} // Стили для аватара профиля
-            />
+      {({ isActive }) => (
+        <div className={`${styles.container_li_img} ${className || ''}`}>
+          {textKey === "profile" ? (
+            <div className={styles.avaImg}>
+              <img
+                src={icon}
+                alt="User Avatar"
+                className={styles.profileAvatar}
+              />
+            </div>
+          ) : (
+            <img src={isActive ? activeIcon : icon} alt="icon" />
+          )}
+          <div className={styles.container_li_text}>
+            <p>{t(textKey)}</p>
           </div>
-        ) : (
-          <img src={icon} alt="icon" />
-        )}
-      </div>
-      <div className={styles.container_li_text}>
-        <p>{t(textKey)}</p>
-      </div>
+        </div>
+      )}
     </NavLink>
   );
 }
