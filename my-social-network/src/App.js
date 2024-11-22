@@ -20,8 +20,6 @@ import ProfileUser from "./Pages/ProfUser/ProfileUser";
 import ProtectedRoute from './components/ProtectedRoute';
 import PostList from "./components/PostList";
 import Test from "./components/Test";
-// import ProfilePosts from "./Pages/Posts/ProfilePosts";
-// import { socket } from "./socket";
 
 
 
@@ -42,7 +40,6 @@ function App() {
           <Route path="/search" element={<SearchPage />} />
           <Route path="/explore" element={<ExplorePage />} />
           <Route path="/profuser/:userId" element={<ProfileUser />} />
-          {/* <Route path="/profuserposts/:userId" element={<ProfilePosts />} /> */}
           <Route path="/messages" element={<MessagesPage />} />
           <Route path="/notifications" element={<NotificationsPage />} />
           <Route path="/posts" element={<Posts />} />

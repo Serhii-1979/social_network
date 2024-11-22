@@ -29,7 +29,7 @@ function Container() {
   useEffect(() => {
     dispatch(fetchCurrentUser()).then((action) => {
       if (action.payload?.profile_image) {
-        setUserAvatar(action.payload.profile_image); // Сохраняем аватар при первой загрузке
+        setUserAvatar(action.payload.profile_image);
       }
     });
   }, [dispatch]);
