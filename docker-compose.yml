@@ -1,0 +1,52 @@
+services:
+  server:
+    build:
+      context: ./be-social
+      dockerfile: Dockerfile
+    image: myapp-server
+    container_name: myapp-server
+    command: nodemon ./src/server.js
+    ports:
+      - "5000:5000"
+#    depends_on:
+#      - mongo
+    env_file: .env  
+    environment:
+      - NODE_ENV=development
+      - MONGO_URI=$MONGO_URI
+      - JWT_SECRET=$JWT_SECRET
+      - CLOUDINARY_CLOUD_NAME=$CLOUDINARY_CLOUD_NAME
+      - CLOUDINARY_API_KEY=$CLOUDINARY_API_KEY
+      - CLOUDINARY_API_SECRET=$CLOUDINARY_API_SECRET
+    networks:
+      - app-network
+
+#  mongo:
+#    image: mongo
+#    volumes:
+#      - ./data-volume:/data/db
+#    ports:
+#      - "27017:27017"
+#    networks:
+#      - app-network
+
+  client:
+    build:
+      context: ./my-social-network
+      dockerfile: Dockerfile
+    image: myapp-client
+    container_name: myapp-client
+    command: npm start
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+volumes:
+  data-volume:
+
