@@ -10,3 +10,4 @@ node_modules/
 # Исключить кэши операционной системы
 .DS_Store
 Thumbs.db
+*~

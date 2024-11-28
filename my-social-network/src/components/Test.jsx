@@ -6,7 +6,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/post'); // Убедитесь, что этот URL соответствует вашему API
+        const response = await fetch('http://server:5000/api/post'); // Убедитесь, что этот URL соответствует вашему API
         if (!response.ok) {
           throw new Error("Ошибка сети или сервера");
         }
